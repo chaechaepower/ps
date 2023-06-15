@@ -6,29 +6,27 @@ import java.util.StringTokenizer;
 
 public class Main {
 
-	
 	public static void main(String[] args) throws IOException {
 
-		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-		String str=bf.readLine();
-		
-		StringTokenizer st=new StringTokenizer(str);
-		int N=Integer.parseInt(st.nextToken());
-		int k=Integer.parseInt(st.nextToken());
-		
-		int arr[]=new int[N];
-		
-		str=bf.readLine();
-		st=new StringTokenizer(str);
-		for(int i=0;i<N;i++) {
-			arr[i]=Integer.parseInt(st.nextToken());
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		int N = Integer.parseInt(st.nextToken());
+		int K = Integer.parseInt(st.nextToken());
+
+		int[] arr = new int[N];
+
+		st = new StringTokenizer(br.readLine());
+
+		for (int i = 0; i < N; i++) {
+			arr[i] = Integer.parseInt(st.nextToken());
 		}
 
 		Arrays.sort(arr);
 
-		System.out.println(arr[k-1]);
+		System.out.println(arr[K - 1]);
+
 	}
-	
-	
+
 }
