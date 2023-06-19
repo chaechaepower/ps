@@ -1,57 +1,51 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.Optional;
-import java.util.StringTokenizer;
 
 public class Main {
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws NumberFormatException, IOException {
 
-		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-		StringBuilder sb=new StringBuilder();
-		
-		int n = Integer.parseInt(bf.readLine());
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
 
-		while(n-->0) {
-			sb.append(solve(bf.readLine())).append('\n');
+		int N = Integer.parseInt(br.readLine());
+
+		while (N-- > 0) {
+
+			sb.append(solve(br.readLine())).append('\n');
 		}
-		
+
 		System.out.println(sb);
-		
 
-		}
-	
-	
-	public static String solve(String s) {
-		
-		int count=0;
-		
-		for(int i=0;i<s.length();i++) {
-			
-			char c=s.charAt(i);
-			
-			if(c=='(') {
+	}
+
+	public static String solve(String ps) {
+
+		int count = 0;
+
+		for (char c : ps.toCharArray()) {
+
+			if (c == '(') {
 				count++;
 			}
-			else if(count==0) {
+
+			else if (count == 0) {
 				return "NO";
 			}
+
 			else {
 				count--;
 			}
-		}
-		
-		if(count==0) {
-			return "YES";
-		}
-		else {
-			return "NO";
+
 		}
 
-	
+		if (count == 0) {
+			return "YES";
+		} else {
+			return "NO";
+
+		}
 	}
-	
+
 }
