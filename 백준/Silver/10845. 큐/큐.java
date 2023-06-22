@@ -23,12 +23,10 @@ public class Main {
 			switch (ins) {
 
 			case "pop":
-				if (queue[++front] >= 1) {
-					System.out.println(queue[front]);
-					queue[front] = -1;
-				} else {
+				if (front == rear) {
 					System.out.println(-1);
-					front--;
+				} else {
+					System.out.println(queue[++front]);
 				}
 				break;
 
