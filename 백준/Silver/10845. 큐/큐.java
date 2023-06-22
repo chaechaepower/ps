@@ -5,67 +5,99 @@ import java.util.StringTokenizer;
 
 public class Main {
 
+	static int[] queue;
+
+	static int rear = -1;
+	static int front = -1;
+
 	public static void main(String[] args) throws IOException {
 
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
 
 		int N = Integer.parseInt(br.readLine());
 
-		int[] queue = new int[N];
-
-		int rear = -1;
-		int front = -1;
+		queue = new int[N];
 
 		while (N-- > 0) {
 
-			String ins = br.readLine();
+			StringTokenizer st = new StringTokenizer(br.readLine());
 
-			switch (ins) {
+			switch (st.nextToken()) {
 
 			case "pop":
-				if (front == rear) {
-					System.out.println(-1);
-				} else {
-					System.out.println(queue[++front]);
-				}
+				sb.append(pop()).append('\n');
 				break;
 
 			case "size":
-				System.out.println(rear - front);
+				sb.append(size()).append('\n');
 				break;
 
 			case "empty":
-				if (front == rear) {
-					System.out.println(1);
-				} else {
-					System.out.println(0);
-				}
+				sb.append(empty()).append('\n');
 				break;
 
 			case "front":
-				if (front == rear) {
-					System.out.println(-1);
-				} else {
-					System.out.println(queue[front + 1]);
-				}
+				sb.append(front()).append('\n');
 				break;
 
 			case "back":
-				if (front == rear) {
-					System.out.println(-1);
-				} else {
-					System.out.println(queue[rear]);
-				}
+				sb.append(back()).append('\n');
 				break;
 
 			default: // push
-				StringTokenizer st = new StringTokenizer(ins);
-				st.nextToken();
-				int x = Integer.parseInt(st.nextToken());
-
-				queue[++rear] = x;
+				push(Integer.parseInt(st.nextToken()));
 
 			}
 		}
+
+		System.out.println(sb);
 	}
+
+	public static void push(int x) {
+
+		queue[++rear] = x;
+	}
+
+	public static int pop() {
+
+		if (front == rear) {
+			return -1;
+		} else {
+			return queue[++front];
+		}
+	}
+
+	public static int size() {
+
+		return rear - front;
+	}
+
+	public static int empty() {
+
+		if (front == rear) {
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+
+	public static int front() {
+
+		if (front == rear) {
+			return -1;
+		} else {
+			return queue[front + 1];
+		}
+	}
+
+	public static int back() {
+
+		if (front == rear) {
+			return -1;
+		} else {
+			return queue[rear];
+		}
+	}
+
 }
