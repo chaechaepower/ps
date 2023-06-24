@@ -1,8 +1,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayDeque;
-import java.util.Deque;
 
 public class Main {
 
@@ -12,24 +10,24 @@ public class Main {
 
 		String input = br.readLine();
 
-		Deque<Character> stack = new ArrayDeque<>();
-
 		int count = 0;
+
+		int stick = 0;
 
 		for (int i = 0; i < input.length(); i++) {
 
 			if (input.charAt(i) == '(') {
 
-				stack.addFirst(input.charAt(i));
+				stick++;
 				continue;
 			}
 
 			if (input.charAt(i) == ')') {
 
-				stack.pollFirst();
+				stick--;
 
 				if (input.charAt(i - 1) == '(') { // 레이저
-					count += stack.size();
+					count += stick;
 				} else {
 					count++;
 				}
