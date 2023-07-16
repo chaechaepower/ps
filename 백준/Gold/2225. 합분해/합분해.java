@@ -1,24 +1,46 @@
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 
-		Scanner s = new Scanner(System.in);
-		int n = s.nextInt();
-		int k = s.nextInt();
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-		int[][] dp = new int[201][201];
+		StringTokenizer st = new StringTokenizer(br.readLine());
 
-		for (int i = 1; i <= k; i++) {
-			dp[i][0] = 1;
+		int N = Integer.parseInt(st.nextToken());
+		int K = Integer.parseInt(st.nextToken());
+
+		long[][] dp = new long[N + 1][K + 1];
+
+		for (int i = 1; i <= K; i++) {
+			dp[0][i] = 1L;
 		}
-		for (int i = 1; i <= k; i++) {
-			for (int j = 1; j <= n; j++) {
-				dp[i][j] = (dp[i][j - 1] + dp[i - 1][j]) % 1000000000;
+
+		for (int i = 1; i <= N; i++) {
+			dp[i][1] = 1L;
+		}
+
+		if (K >= 2) {
+			for (int i = 1; i <= N; i++) {
+				dp[i][2] = (long) (i + 1);
 			}
 		}
-		System.out.println(dp[k][n]);
+
+		for (int i = 3; i <= K; i++) {
+			for (int j = 1; j <= N; j++) {
+				dp[j][i] = 0L;
+				for (int k = 0; k <= j; k++) {
+					dp[j][i] += dp[k][i - 1] % 1000000000;
+				}
+			}
+		}
+
+		System.out.println(dp[N][K] % 1000000000);
+
 	}
 
 }
