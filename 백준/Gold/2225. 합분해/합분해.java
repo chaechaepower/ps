@@ -32,11 +32,10 @@ public class Main {
 
 		for (int i = 3; i <= K; i++) {
 			for (int j = 1; j <= N; j++) {
-				for (int k = 0; k <= j; k++) {
-					dp[j][i] += dp[k][i - 1] % 1000000000;
-				}
+				dp[j][i] = (dp[j - 1][i] + dp[j][i - 1]) % 1000000000;
 			}
 		}
+
 		System.out.println(dp[N][K] % 1000000000);
 	}
 }
