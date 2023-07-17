@@ -23,20 +23,13 @@ public class Main {
 			arr[i] = Integer.parseInt(st.nextToken());
 		}
 
-		System.out.println(recur(N));
-
-	}
-
-	static int recur(int n) {
-
-		if (dp[n] == 0) {
-
-			for (int i = 1; i <= n; i++) {
-				dp[n] = Math.max(dp[n], arr[i] + recur(n - i));
+		for (int i = 1; i <= N; i++) {
+			for (int j = 1; j <= i; j++) {
+				dp[i] = Math.max(dp[i], arr[j] + dp[i - j]);
 			}
 		}
 
-		return dp[n];
+		System.out.println(dp[N]);
 	}
 
 }
