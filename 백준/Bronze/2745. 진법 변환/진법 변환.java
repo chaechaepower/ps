@@ -1,26 +1,30 @@
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
 public class Main {
-	public static void main(String[] args) {
 
-		Scanner sc = new Scanner(System.in);
+	public static void main(String[] args) throws IOException {
 
-		String s = sc.next();
-		int N = sc.nextInt();
-		int tmp = 1;
-		int ans = 0;
-		
-		for (int i = s.length()-1; i >= 0; i--) {
-			char c = s.charAt(i);
-			
-			if('A'<= c && c <= 'Z') {
-				ans += (c-'A'+10)*tmp;
-			}else {
-				ans += (c-'0')*tmp;
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		String N = st.nextToken();
+		int B = Integer.parseInt(st.nextToken());
+
+		int result = 0;
+
+		for (int i = N.length() - 1; i >= 0; i--) {
+			char c = N.charAt(i);
+
+			if (c >= 'A' && c <= 'Z') {
+				result += Math.pow(B, (N.length() - 1 - i)) * (10 + (c - 'A'));
+			} else { // c >='0' && c<='9'
+				result += Math.pow(B, (N.length() - 1 - i)) * (c - '0');
 			}
-			tmp *= N;
 		}
-		
-		System.out.println(ans);
-		
+		System.out.println(result);
 	}
+
 }
