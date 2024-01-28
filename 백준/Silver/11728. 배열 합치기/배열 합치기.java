@@ -1,43 +1,35 @@
-import java.util.Arrays;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
 
-public class Main {
-	static int n,m;
-	public static void main(String[] args) {
-		Scanner sc=new Scanner(System.in);
-		n=sc.nextInt();
-		m=sc.nextInt();
-		int[] a=new int[n];
-		int[] b=new int[m];
-		for (int i = 0; i < n; i++) {
-			a[i]=sc.nextInt();
+class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
+		BufferedWriter bw=new BufferedWriter(new OutputStreamWriter(System.out));
+
+		String[] input=br.readLine().split(" "); // 첫 번째 개행 읽기
+		int n=Integer.parseInt(input[0]), m=Integer.parseInt(input[1]);
+		int size=n+m;
+		int[] result=new int[size];
+		
+		String[] arrayA=br.readLine().split(" "); // 두 번째 줄 읽기
+		String[] arrayB=br.readLine().split(" "); // 세 번째 줄 읽기
+		
+		int idx=0;
+		for(int i=0;i<n;i++) { 
+			result[idx++]=Integer.parseInt(arrayA[i]);
 		}
-		for (int i = 0; i < m; i++) {
-			b[i]=sc.nextInt();
+		for(int i=0;i<m;i++) {
+			result[idx++]=Integer.parseInt(arrayB[i]);
 		}
-		StringBuilder sb=new StringBuilder();
-		Arrays.sort(a);
-		Arrays.sort(b);
-		int i=0;
-		int j=0;
-		int k=0;
-		while(i<n && j<m) {
-			if(a[i]<b[j]) {
-				sb.append(a[i++]+" ");
-			}else {
-				sb.append(b[j++]+" ");
-			}
+		Arrays.sort(result); 
+		
+		for(int r:result) {
+			bw.write(String.valueOf(r)+" ");
 		}
 		
-		while(i<n) {
-			sb.append(a[i++]+" ");
-		}
-		while(j<m) {
-			sb.append(b[j++]+" ");
-		}
-		
-		System.out.println(sb.toString());
-		
+		bw.flush();
+		bw.close();
 	}
+    
 }
