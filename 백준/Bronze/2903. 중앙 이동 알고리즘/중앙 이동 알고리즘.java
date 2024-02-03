@@ -7,6 +7,13 @@ public class Main {
         int n = Integer.parseInt(br.readLine());
 		br.close();
         
-        System.out.println((int)Math.pow(Math.pow(2, n) +1, 2));
+		int k=2;
+		
+		
+		for(int i=1;i<=n;i++) {
+			k=k+k-1;
+		}
+		System.out.println(k*k);
+        
     }
 }
