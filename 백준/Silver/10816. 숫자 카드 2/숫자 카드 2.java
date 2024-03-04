@@ -13,31 +13,24 @@ public class Main {
 
 		int n = Integer.parseInt(br.readLine());
 
-		Map<Integer, Integer> map = new HashMap<>();
+		int[] counting = new int[20000001];
 
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		while (n-- > 0) {
-			int num = Integer.parseInt(st.nextToken());
-			if (map.containsKey(num)) {
-				map.put(num, map.get(num) + 1);
-			} else {
-				map.put(num, 1);
-			}
+
+		for (int i = 0; i < n; i++) {
+			counting[Integer.parseInt(st.nextToken()) + 10000000]++;
 		}
 
 		int m = Integer.parseInt(br.readLine());
 
-		StringBuilder sb = new StringBuilder();
 		st = new StringTokenizer(br.readLine());
+		StringBuilder sb = new StringBuilder();
 		while (m-- > 0) {
-			int num = Integer.parseInt(st.nextToken());
-			if (!map.containsKey(num)) {
-				sb.append(0).append(' ');
-			} else {
-				sb.append(map.get(num)).append(' ');
-			}
+			int cnt = counting[Integer.parseInt(st.nextToken()) + 10000000];
+			sb.append(cnt).append(' ');
 		}
 
 		System.out.println(sb);
 	}
+
 }
