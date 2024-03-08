@@ -6,50 +6,51 @@ import java.util.StringTokenizer;
 public class Main {
 
 	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st=new StringTokenizer(bf.readLine());
-		
-		int N=Integer.parseInt(st.nextToken());
-		int M=Integer.parseInt(st.nextToken());
-		
-		int[] arr=new int[N];
-		
-		long max=0;
-		
-		st=new StringTokenizer(bf.readLine());
-		for(int i=0;i<N;i++) {
-			arr[i]=Integer.parseInt(st.nextToken());
-			if(arr[i]>max) {
-				max=arr[i];
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+
+		int[] arr = new int[n];
+
+		long max = 0;
+
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < n; i++) {
+			arr[i] = Integer.parseInt(st.nextToken());
+			if (arr[i] > max) {
+				max = arr[i];
 			}
 		}
 
 		max++;
-		
-		long min=0;
-		long mid=0;
-		
-		while(min<max) {
-			
-			mid=(min+max)/2;
-			
-			long length=0;
-			
-			for(int i=0;i<N;i++) {
-				if(arr[i]-mid>0){
-					length+=(arr[i]-mid);
+
+		long min = 0;
+		long mid = 0;
+
+		while (min < max) {
+
+			mid = (min + max) / 2;
+
+			long len = 0;
+
+			for (int i = 0; i < n; i++) {
+				if (arr[i] - mid > 0) {
+					len += arr[i] - mid;
 				}
 			}
-			
-			if(length<M) {
-				max=mid;
+
+			if (len < m) { // 길이를 길게 설정해서 len이 작게 나왔으므로 길이를 줄여야한다.
+				max = mid;
+			} else { // len>=m 길이를 짧게 설정해서 len이 길게 나왔으므로 길이를 늘려야한다. 같을 때는??
+				min = mid + 1;
 			}
-			else {
-				min=mid+1;
-			}
-			
 		}
-		System.out.println(max-1);
+
+		System.out.println(max - 1);
+
 	}
+
 }
