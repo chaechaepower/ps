@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -18,32 +20,29 @@ public class Main {
 		int n = Integer.parseInt(st.nextToken());
 		int m = Integer.parseInt(st.nextToken());
 
-		Map<String,Integer> listen = new HashMap<>();
+		Set<String> set = new HashSet<>();
 		while (n-- > 0) {
-			listen.put(br.readLine(),1);
+			set.add(br.readLine());
 		}
 
-		List<String> inter=new ArrayList<>();
-				
-		while (m-- > 0) {
-			String ppl = br.readLine();
-			
-			listen.put(ppl, listen.getOrDefault(ppl, 0)+1);
-			
-			if(listen.get(ppl)==2) {
-				inter.add(ppl);
+		List<String> list=new ArrayList<>();
+		
+		while(m-->0) {
+			String name=br.readLine();
+			if(set.contains(name)) {
+				list.add(name);
 			}
 		}
 		
-		Collections.sort(inter);
-
-		StringBuilder sb = new StringBuilder();
-		sb.append(inter.size()).append('\n');
-		for(String s:inter) {
+		Collections.sort(list);
+		
+		StringBuilder sb=new StringBuilder();
+		sb.append(list.size()).append('\n');
+		
+		for(String s:list) {
 			sb.append(s).append('\n');
 		}
 		
 		System.out.println(sb);
 	}
-
 }
