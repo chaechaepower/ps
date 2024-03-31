@@ -22,13 +22,13 @@ public class Main {
 		arr = new int[m];
 		visited = new boolean[n];
 
-		dfs(0);
+		dfs(1, 0);
 
 		System.out.println(sb);
 
 	}
 
-	static void dfs(int depth) {
+	static void dfs(int at, int depth) {
 
 		if (depth == m) {
 			for (int val : arr) {
@@ -38,17 +38,9 @@ public class Main {
 			return;
 		}
 
-		for (int i = 0; i < n; i++) {
-			if (!visited[i]) {
-				if (depth==0 || i + 1 > arr[depth-1]) { // 이전에 저장된 요소보다 크거나 첫 번째 저장될 요소여야함.
-					visited[i] = true;
-					arr[depth] = i + 1;
-					dfs(depth + 1);
-					visited[i] = false;
-				}
-
-			}
+		for (int i = at; i <= n; i++) {
+			arr[depth] = i;
+			dfs(i + 1, depth + 1);
 		}
-
 	}
 }
