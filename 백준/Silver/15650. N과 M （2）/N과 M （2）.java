@@ -1,35 +1,38 @@
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.StringTokenizer;
+import java.io.IOException;
 
 public class Main {
 
-	static StringBuilder sb = new StringBuilder();;
-	static int[] arr;
+	static int n;
+	static int m;
+	static int[] arr; // 출력 위한 배열
 	static boolean[] visited;
+	static StringBuilder sb = new StringBuilder();
 
 	public static void main(String[] args) throws IOException {
-
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
 		StringTokenizer st = new StringTokenizer(br.readLine());
 
-		int n = Integer.parseInt(st.nextToken());
-		int m = Integer.parseInt(st.nextToken());
+		n = Integer.parseInt(st.nextToken());
+		m = Integer.parseInt(st.nextToken());
 
-		arr = new int[m]; // 출력 저장 배열
+		arr = new int[m];
 		visited = new boolean[n];
 
-		perm(n, m, 0);
+		dfs(0);
 
 		System.out.println(sb);
+
 	}
 
-	static void perm(int n, int m, int depth) {
+	static void dfs(int depth) {
 
 		if (depth == m) {
-			for (int e : arr) {
-				sb.append(e).append(' ');
+			for (int val : arr) {
+				sb.append(val).append(' ');
 			}
 			sb.append('\n');
 			return;
@@ -37,16 +40,15 @@ public class Main {
 
 		for (int i = 0; i < n; i++) {
 			if (!visited[i]) {
-
-				if (depth > 0 && i + 1 < arr[depth - 1]) { // 지금 내가 저장하려는 수가 앞전에 저장된 수보다 작으면 저장x.
-					continue;
+				if (depth==0 || i + 1 > arr[depth-1]) { // 이전에 저장된 요소보다 크거나 첫 번째 저장될 요소여야함.
+					visited[i] = true;
+					arr[depth] = i + 1;
+					dfs(depth + 1);
+					visited[i] = false;
 				}
 
-				visited[i] = true;
-				arr[depth] = i + 1;
-				perm(n, m, depth + 1);
-				visited[i] = false;
 			}
 		}
+
 	}
 }
