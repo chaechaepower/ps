@@ -1,76 +1,69 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+import java.io.IOException;
 
 public class Main {
 
-    public static int L, C;
-    public static char[] list;
-    public static char[] code;
+	static char[] arr;
+	static char[] result;
+	static boolean[] visited;
+	static int l;
+	static int c;
+	static StringBuilder sb = new StringBuilder();
 
-    public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-        StringBuilder sb = new StringBuilder();
+		l = Integer.parseInt(st.nextToken());
+		c = Integer.parseInt(st.nextToken());
 
-        StringTokenizer st = new StringTokenizer(br.readLine());
+		arr = new char[c];
+		result = new char[l];
+		visited = new boolean[c];
 
-        L = Integer.parseInt(st.nextToken());
-        C = Integer.parseInt(st.nextToken());
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < c; i++) {
+			arr[i] = st.nextToken().charAt(0);
+		}
 
-        list = new char[C];
-        code = new char[L];
+		Arrays.sort(arr);
 
-        st = new StringTokenizer(br.readLine());
+		dfs(0, 0);
+		System.out.println(sb);
+	}
 
-        for (int x = 0; x < C; x++) {
-            list[x] = st.nextToken().charAt(0);
-        }
+	static void dfs(int at, int depth) {
 
+		if (depth == l) {
+			if (isValidLen()) {
+				sb.append(result).append('\n');
+			}
+			return; // isValidLen()이 false여도 return
+		}
 
-        // 정렬
-        Arrays.sort(list);
+		for (int i = at; i < c; i++) {
+			result[depth] = arr[i];
+			dfs(i + 1, depth + 1);
+		}
 
-        makeCode(0,0);
+	}
 
-    }
+	static boolean isValidLen() {
+		int mo = 0; // 모음의 개수
+		int ja = 0; // 자음의 개수
+		for (int i = 0; i < result.length; i++) {
+			if (result[i] == 'a' || result[i] == 'e' || result[i] == 'i' || result[i] == 'o' || result[i] == 'u')
+				mo++;
+			else
+				ja++;
 
-    public static void makeCode(int x,int idx) {
-
-
-        if (idx == L) {
-            // 최소 한개의 모음, 최소 2개의 자음인지 확인
-            if (isValid()) {
-                System.out.println(code);
-            }
-            return;
-        }
-
-        // 아직 길이 L의 코드를 만들지 않았고 글자도 아직 남았다.
-
-        for (int i = x; i < C; i++) {
-            code[idx] = list[i];
-            makeCode(i+1, idx + 1);
-        }
-    }
-
-    // 최소 모음 1개, 최소 자음 2개인지 확인
-    public static boolean isValid() {
-        int mo = 0;
-        int ja = 0;
-
-        for (char x : code) {
-            if (x == 'a' || x == 'e' || x == 'i' || x == 'o' || x == 'u') {
-                mo++;
-            } else {
-                ja++;
-            }
-        }
-
-        if (mo >= 1 && ja >= 2) {
-            return true;
-        }
-        return false;
-    }
-
+		}
+		if (mo >= 1 && ja >= 2)
+			return true;
+		else
+			return false;
+	}
 }
