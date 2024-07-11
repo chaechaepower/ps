@@ -1,46 +1,49 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
-import java.io.IOException;
 
 public class Main {
 
-	static int n;
-	static int m;
-	static int[] arr; // 출력 위한 배열
-	static boolean[] visited;
-	static StringBuilder sb = new StringBuilder();
+    public static int n;
+    public static int m;
 
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    public static boolean[] visited;
+    public static int[] arr;
+    public static StringBuilder sb=new StringBuilder();
 
-		StringTokenizer st = new StringTokenizer(br.readLine());
+    public static void main(String[] args) throws IOException{
+        
+        BufferedReader br= new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st=new StringTokenizer(br.readLine());
 
-		n = Integer.parseInt(st.nextToken());
-		m = Integer.parseInt(st.nextToken());
+        n=Integer.parseInt(st.nextToken());
+        m=Integer.parseInt(st.nextToken());
 
-		arr = new int[m];
-		visited = new boolean[n];
+        visited=new boolean[n];
+        arr=new int[m];
+        
+        dfs(0,0);
+        System.out.println(sb);
+    }
 
-		dfs(1, 0);
+    public static void dfs(int depth, int start){
+        if(depth==m){
+            for(int e:arr){
+                sb.append(e).append(' ');
+            }
+            sb.append('\n');
+            return;
+        }
 
-		System.out.println(sb);
+        for(int i=start;i<n;i++){
+            if(!visited[i]){
+                visited[i]=true;
+                arr[depth]=i+1;
+                dfs(depth+1, i+1);
+                visited[i]=false;
+            }
+        }
 
-	}
-
-	static void dfs(int at, int depth) {
-
-		if (depth == m) {
-			for (int val : arr) {
-				sb.append(val).append(' ');
-			}
-			sb.append('\n');
-			return;
-		}
-
-		for (int i = at; i <= n; i++) {
-			arr[depth] = i;
-			dfs(i + 1, depth + 1);
-		}
-	}
+    }
 }
