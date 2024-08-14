@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
 import java.util.StringTokenizer;
@@ -12,6 +13,7 @@ public class Main {
     
     static List<Integer>[] graph;
     static int[] visited; //도시 방문 여부 및 거리 저장
+    static List<Integer> answer=new ArrayList<>();
     static int n;
     static int m;
     static int k;
@@ -43,12 +45,13 @@ public class Main {
 
         bfs(x);
 
-        StringBuilder sb=new  StringBuilder();
-        for(int i=1;i<=n;i++){
-            if (visited[i]==k) {
-                sb.append(i).append('\n');
-            }
+        Collections.sort(answer);
+        StringBuilder sb=new StringBuilder();
+
+        for(int e:answer){
+            sb.append(e).append('\n');
         }
+
         if (sb.toString().isEmpty()) {
             sb.append(-1);
         }
@@ -63,6 +66,10 @@ public class Main {
         
         while (!queue.isEmpty()) {
             int n=queue.poll();
+            if(visited[n]>k) break;
+            if (visited[n]==k) {
+                answer.add(n);
+            }
             
             for(int i=0;i<graph[n].size();i++){
                 int adj=graph[n].get(i);
