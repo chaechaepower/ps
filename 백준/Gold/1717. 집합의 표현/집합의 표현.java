@@ -28,17 +28,10 @@ public class Main {
             int a=Integer.parseInt(st.nextToken());
             int b=Integer.parseInt(st.nextToken());
 
-            switch (opt) {
-                case 0:
-                    unionParent(a,b);
-                    break;
-            
-                case 1:
-                    findParent(a,b);
-                    break;  
-
-                default:
-                    break;
+            if (opt==0) {
+                unionParent(a,b);
+            }else{
+                findParent(a,b);
             }
         }
 
