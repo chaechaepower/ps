@@ -1,8 +1,11 @@
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.StringTokenizer;
 
 
@@ -39,7 +42,7 @@ public class Main {
 		
 		for(int i=1;i<=n;i++) {
 			if(!visited[i]) {
-				dfs(i);
+				bfs(i);
 				cnt++;
 			}
 		}
@@ -56,4 +59,28 @@ public class Main {
 			}
 		}
 	}
+	
+	public static void bfs(int v) {
+		Queue<Integer> queue= new LinkedList<>();
+		
+		queue.offer(v);
+		visited[v]=true;
+		
+		while(!queue.isEmpty()) {
+			int node=queue.poll();
+			
+			for(int e:edge[node]) {
+				if(!visited[e]) {
+					queue.add(e);
+					visited[e]=true;
+				}
+			}
+		}
+	}
+	
 }
+
+
+
+
+
