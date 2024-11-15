@@ -1,83 +1,101 @@
+
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
-
 public class Main {
-    static int[] dx = {-1, 1, 0, 0};
-    static int[] dy = {0, 0, -1, 1};
-    static int n, m;
-    static int[][] map;
-    static Queue<int[]> q = new LinkedList<>();
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st;
+	// public static boolean[][] visited;
+	public static int[][] maze;
+	public static Queue<int[]> queue = new LinkedList<>();
+	public static int[] xDir = { 0, -1, 1, 0 };
+	public static int[] yDir = { 1, 0, 0, -1 };
+	public static int m;
+	public static int n;
 
-        st = new StringTokenizer(br.readLine());
-        m = Integer.parseInt(st.nextToken());
-        n = Integer.parseInt(st.nextToken());
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
 
-        map = new int[n][m];
+		m = Integer.parseInt(st.nextToken());
+		n = Integer.parseInt(st.nextToken());
 
+		maze = new int[n][m];
+		// visited=new boolean[n][m];
 
-        for (int i = 0; i < n; i++) {
-            st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < m; j++) {
-                map[i][j] = Integer.parseInt(st.nextToken());
-                if (map[i][j] == 1) {
-                    q.add(new int[]{i, j});
-                }
-            }
-        }
+		boolean isZero = false;
+		for (int i = 0; i < n; i++) {
+			st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < m; j++) {
+				maze[i][j] = Integer.parseInt(st.nextToken());
+				if (maze[i][j] == 1) {
+					queue.offer(new int[] { i, j });
+				} else if (maze[i][j] == 0) {
+					isZero = true;
+				}
+			}
+		}
 
-        System.out.println(bfs());
-    }
+		if (!isZero) {
+			System.out.println(0);
+			return;
+		}
 
-    private static int bfs() {
-        while (!q.isEmpty()) {
-            int[] t = q.poll();
-            int x = t[0];
-            int y = t[1];
-            for (int i = 0; i < 4; i++) {
-                int nx = x + dx[i];
-                int ny = y + dy[i];
-                if (nx < 0 || nx >= n || ny < 0 || ny >= m) continue;
-                if (map[nx][ny] == 0) {
-                    map[nx][ny] = map[x][y] + 1;
-                    q.add(new int[]{nx, ny});
-                }
-            }
-        }
+		bfs();
 
-        int max = Integer.MIN_VALUE;
-        if (checkZero()) {
-            return -1;
-        } else {
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < m; j++) {
-                    if (max < map[i][j]) {
-                        max = map[i][j];
-                    }
-                }
-            }
+		if (checkZero()) {
+			System.out.println(-1);
+			return;
+		}
 
-            return max - 1;
-        }
+		int max = Integer.MIN_VALUE;
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < m; j++) {
+				if (maze[i][j] > max)
+					max = maze[i][j];
+			}
+		}
+		System.out.println(max - 1);
 
+	}
 
-    }
+	public static void bfs() {
 
-    private static boolean checkZero() {
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (map[i][j] == 0)
-                    return true;
-            }
-        }
-        return false;
-    }
+		while (!queue.isEmpty()) {
+			int[] node = queue.poll();
+			int x = node[0];
+			int y = node[1];
+
+			for (int i = 0; i < 4; i++) {
+				int newX = x + xDir[i];
+				int newY = y + yDir[i];
+
+				if (newX >= 0 && newX < n && newY >= 0 && newY < m) {
+					if (maze[newX][newY] == 0) {
+						queue.offer(new int[] { newX, newY });
+						maze[newX][newY] = maze[x][y] + 1;
+					}
+				}
+			}
+		}
+	}
+
+	public static boolean checkZero() {
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < m; j++) {
+				if (maze[i][j] == 0) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 }
