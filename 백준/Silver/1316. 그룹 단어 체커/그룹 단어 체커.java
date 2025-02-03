@@ -14,42 +14,30 @@ public class Main {
 		
 		while(n-->0) {
 			Arrays.fill(memory, false);
+			
 			String str=br.readLine();
+			char pre = 0;
+			int i;
 			
-			if(str.length()==1) {
-				cnt++;
-				continue;
-			}
-			
-			char pre=str.charAt(0);
-			memory[pre-'a']=true;
-			
-			for(int i=1;i<str.length();i++) {
-				char c=str.charAt(i);
+			for(i=0;i<str.length();i++) {
+				char now=str.charAt(i);
 				
-				if(c==pre) {
-					if(i==str.length()-1) {
-						cnt++;
-					}
-					pre=c;
-					continue;
-				}
-				else if(memory[c-'a']) { //이전 문자와 다른데 이미 나왔던 문자 
-					break;
-				}
-				else if(!memory[c-'a']) { //이전 문자와 다른데 안나왔던 문자
-					if(i==str.length()-1) {
-						cnt++;
+				if(pre!=now) {
+					if(!memory[now-'a']) {
+						memory[now-'a']=true;
+						pre=now;
+					}else {
 						break;
 					}
-					memory[c-'a']=true;
-					pre=c;
 				}
+			}
+			
+			if(i==str.length()) {
+				cnt++;
 			}
 		}
 		
 		System.out.println(cnt);
-		
+	
 	}
-
 }
