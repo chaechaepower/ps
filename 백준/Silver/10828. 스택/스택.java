@@ -1,74 +1,60 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.StringTokenizer;
-
 
 public class Main {
 
 	public static void main(String[] args) throws IOException {
-
-		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-		int N=Integer.parseInt(bf.readLine());
+		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
+		int n=Integer.parseInt(br.readLine());
+		StringBuilder sb=new StringBuilder();
 		
+		int[] stack=new int[n];
+		int top=-1;
 		
-		int [] stack=new int[10000];
-		int p=-1;
-		int size=0;
-		
-		
-		StringTokenizer st;
-		String ord;
-		
-		for(int i=0;i<N;i++) {
-			st=new StringTokenizer(bf.readLine());
-			ord=st.nextToken();
+		while(n-->0) {
+			String prompt=br.readLine();
+			StringTokenizer st=new StringTokenizer(prompt);
 			
-			switch(ord) {
-			
+			switch(st.nextToken()) {
 			case "push":
-				int x=Integer.parseInt(st.nextToken());
-				stack[++p]=x;
-				size++;
+				int num=Integer.parseInt(st.nextToken());
+				stack[++top]=num;
 				break;
 			
 			case "pop":
-				if(size==0) {
-					System.out.println(-1);
-				}
-				else {
-					System.out.println(stack[p]);
-					stack[p--]=0;
-					size--;
+				if(top==-1) {
+					sb.append(-1).append('\n');
+				}else {
+					int result=stack[top--];
+					sb.append(result).append('\n');
 				}
 				break;
 			
 			case "size":
-				System.out.println(size);
+				sb.append(top+1).append('\n');
 				break;
 				
 			case "empty":
-				if(size==0) {
-					System.out.println(1);
-				}
-				else {
-					System.out.println(0);
+				if(top==-1) {
+					sb.append(1).append('\n');
+				}else {
+					sb.append(0).append('\n');
 				}
 				break;
 				
 			case "top":
-				if(size==0) {
-					System.out.println(-1);
-				}
-				else {
-					System.out.println(stack[p]);
+				if(top==-1) {
+					sb.append(-1).append('\n');
+				}else {
+					sb.append(stack[top]).append('\n');
 				}
 				break;
-
-			}	
+			}
 		}
-		
+		System.out.print(sb);
 	}
-
 }
+
+
