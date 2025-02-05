@@ -1,61 +1,66 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class Main {
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int n = Integer.parseInt(br.readLine());
-		
-		List<Integer> list=new ArrayList<>();
-		for(int i=0;i<n;i++) {
-			list.add(Integer.parseInt(br.readLine()));
-		}
-		
-		int mean=0;
-		for(int e:list) {
-			mean+=e;
-		}
-		mean=((int)Math.round((double)mean/n));
-		
-		Collections.sort(list);
-		
-		int mid=list.get((n-1)/2); //중앙값 
-		int range=list.get(n-1)-list.get(0); //범위 
-		
-		Map<Integer, Integer> map=new HashMap<>();
-		for(int e:list) {
-			map.put(e, map.getOrDefault(e, 0)+1);
-		}
-				
-		List<Integer> keySet=new ArrayList<>(map.keySet());
-		keySet.sort((o1,o2)->{			
-			if(map.get(o1)==map.get(o2)) {
-				return o1-o2; 
-			}else {
-				return map.get(o2)-map.get(o1);
-			}
-			
-		}); //빈도수로 내림차순하되, 같면 key를 기준으로 오름차순 
 	
-		int freq=keySet.get(0);
+		int[] count=new int[8001]; // -4000~4000 사이 수 저장 x를 x+4000 인덱스에 저장 
 		
-		if(n>1) {
-			freq=map.get(freq)==map.get(keySet.get(1))?keySet.get(1):keySet.get(0);
+		int min=Integer.MAX_VALUE;
+		int max=Integer.MIN_VALUE;
+		int sum=0;
+		
+		for(int i=0;i<n;i++) {
+			int num=Integer.parseInt(br.readLine());
+			sum+=num;
+			count[num+4000]++;
+			
+			if(num<min) {
+				min=num;
+			}
+			if(num>max) {
+				max=num;
+			}
 		}
 		
-		StringBuilder sb=new StringBuilder();
-		sb.append(mean).append('\n'); 
-		sb.append(mid).append('\n');
-		sb.append(freq).append('\n'); 
-		sb.append(range).append('\n');
-		System.out.println(sb);
+		int max_mode=0; //최대 최빈값 
+		int mode=0;
+		boolean flag=false; //이미 해당 최빈값이 등장한 적 있는지
+		int cnt=0;
+		int mid=0;
+		
+		for(int i=min+4000;i<=max+4000;i++) {
+			if(count[i]>0) {
+//				if(cnt==n/2+1) {
+//					mid=i-4000;
+//				}
+				
+				if(cnt<(n+1)/2) {
+					cnt+=count[i];
+					mid=i-4000;
+				}
+				
+				if(count[i]>max_mode) {
+					max_mode=count[i];
+					mode=i-4000;
+					flag=true;
+				}
+				
+				else if(count[i]==max_mode && flag) { //현재 최대 최빈값과 같고 2번째로 등장하는 경우 
+					mode=i-4000;
+					flag=false;  
+				}
+			}
+		}
+		
+		System.out.println((int)(Math.round((double)sum/n))); //산술평균
+		System.out.println(mid);//중앙값 
+		System.out.println(mode); //최빈값 
+		System.out.println(max-min); //범위 
 	}
 }
 
