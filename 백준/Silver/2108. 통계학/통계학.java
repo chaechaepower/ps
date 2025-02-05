@@ -35,10 +35,6 @@ public class Main {
 		
 		for(int i=min+4000;i<=max+4000;i++) {
 			if(count[i]>0) {
-//				if(cnt==n/2+1) {
-//					mid=i-4000;
-//				}
-				
 				if(cnt<(n+1)/2) {
 					cnt+=count[i];
 					mid=i-4000;
