@@ -4,32 +4,19 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Main {
-	static Long[][] dp;
-
+	
 	public static void main(String[] args) throws IOException {
 		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
 		int n=Integer.parseInt(br.readLine());
 		
-		dp=new Long[n+1][10];
+		long[][] dp=new long[n+1][10];
 		
-		if(n==1) {
-			System.out.println(9);
-			return;
+		for(int i=1;i<=9;i++) {
+			dp[1][i]=1;
 		}
 		
-		dp[2][0]=(long) 1;
-		dp[2][1]=(long) 1;
-		dp[2][2]=(long) 2;
-		dp[2][3]=(long) 2;
-		dp[2][4]=(long) 2;
-		dp[2][5]=(long) 2;
-		dp[2][6]=(long) 2;
-		dp[2][7]=(long) 2;
-		dp[2][8]=(long) 2;
-		dp[2][9]=(long) 1;
-		
-		if(n>2) {
-			for(int i=3;i<=n;i++) {
+		if(n>1) {
+			for(int i=2;i<=n;i++) {
 				dp[i][0]=dp[i-1][1];
 				dp[i][9]=dp[i-1][8];
 				for(int j=1;j<=8;j++) {
