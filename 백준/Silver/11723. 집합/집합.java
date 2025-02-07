@@ -1,13 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.StringTokenizer;
-
-
 
 public class Main {
 	
@@ -15,9 +9,9 @@ public class Main {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int m=Integer.parseInt(br.readLine());
 		
-		Set<Integer> set=new HashSet<>();
 		StringBuilder sb=new StringBuilder();
 		
+		int set=0;
 		while(m-->0) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
 			int x;
@@ -25,45 +19,30 @@ public class Main {
 			switch(st.nextToken()) {
 			case "add":
 				x=Integer.parseInt(st.nextToken());
-				set.add(x);
+				set |= (1<<x);
 				break;
 				
 			case "remove":
 				x=Integer.parseInt(st.nextToken());
-				if(set.contains(x)) {
-					set.remove(x);
-				}
+				set &= ~(1<<x);
 				break;
 				
 			case "check":
 				x=Integer.parseInt(st.nextToken());
-				if(set.contains(x)) {
-					sb.append(1).append('\n');
-				}else {
-					sb.append(0).append('\n');
-				}
+				sb.append((set & (1<<x)) !=0 ? 1: 0).append('\n');
 				break;
 				
 			case "toggle":
 				x=Integer.parseInt(st.nextToken());
-				if(set.contains(x)) {
-					set.remove(x);
-				}else {
-					set.add(x);
-				}
+				set^=(1<<x);
 				break;
 				
 			case "all":
-				List<Integer> list=new ArrayList<>();
-				for(int i=1;i<=20;i++) {
-					list.add(i);
-				}
-				set.clear();
-				set.addAll(list);
+				set=(1<<21)-1;
 				break;
 				
 			case "empty":
-				set.clear();
+				set=0;
 				break;
 			}
 		}
