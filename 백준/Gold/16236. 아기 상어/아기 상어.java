@@ -13,10 +13,10 @@ public class Main {
 	static int[][] arr;
 	static int[] dr = { -1, 1, 0, 0 }; // 상하좌우
 	static int[] dc = { 0, 0, -1, 1 };
-	static int size; // 상어 크기
+	static int size=2; // 상어 크기
 	static int stack; // 먹은 물고기 수
 	static List<int[]> availFish; // 0:row, 1:col, 2:아기상어와의 거리
-	static int time; // 더이상 먹을 수 있는 물고기가 없을 때까지 걸리는 시간
+	static int time; // 더이상 먹을 수 있는 물고기가 없을 때까지 걸리는 시간(정답)
 	static int sharkR, sharkC; // 현재 상어 위치
 
 	public static void main(String[] args) throws IOException {
@@ -34,11 +34,10 @@ public class Main {
 				if (arr[i][j] == 9) {
 					sharkR = i;
 					sharkC = j;
-					arr[i][j] = 0;
+					arr[i][j] = 0; //안해주면, 아기 상어의 크기가 9보다 클 경우, 9를 물고기로 착각해서 먹게됨. 현재 상어 위치만 있으면 됨. 
 				}
 			}
 		}
-		size = 2;
 		shark();
 		System.out.println(time);
 	}
