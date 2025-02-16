@@ -38,17 +38,13 @@ public class Main {
 				}
 							
 				//자리 바꿈.
-				char temp=arr[i][j];
-				arr[i][j]=arr[i][j+1];
-				arr[i][j+1]=temp;
+				swap(i,j,i,j+1);
 				
 				//최대 개수 셈.
 				findMax();
 				
 				//다시 원래대로 자리 바꿈.
-				temp=arr[i][j];
-				arr[i][j]=arr[i][j+1];
-				arr[i][j+1]=temp;
+				swap(i,j,i,j+1);
 			}
 		}
 		
@@ -60,20 +56,22 @@ public class Main {
 					continue;
 				}
 							
-				//자리 바꿈.
-				char temp=arr[j][i];
-				arr[j][i]=arr[j+1][i];
-				arr[j+1][i]=temp;
+				//자리 바꿈. 
+				swap(j,i,j+1,i);
 				
 				//최대 개수 셈.
 				findMax();
 
 				//다시 원래대로 자리 바꿈.
-				temp=arr[j][i];
-				arr[j][i]=arr[j+1][i];
-				arr[j+1][i]=temp;
+				swap(j,i,j+1,i);
 			}
 		}
+	}
+	
+	static void swap(int x1, int y1, int x2, int y2) {
+		char temp=arr[x1][y1];
+		arr[x1][y1]=arr[x2][y2];
+		arr[x2][y2]=temp;
 	}
 	
 	static void findMax() {
@@ -81,29 +79,29 @@ public class Main {
 		//행 확인
 		for(int i=0;i<n;i++) {
 			int cnt=1;
+			
 			for(int j=0;j<n-1;j++) {
 				if(arr[i][j]==arr[i][j+1]) {
 					cnt++;
-				}else {
 					max=Math.max(max, cnt);
+				}else {
 					cnt=1;
 				}
 			}
-			max=Math.max(max, cnt);
 		}
 		
 		//열 확인 00 10 20 30
 		for(int i=0;i<n;i++) { 
 			int cnt=1;
+			
 			for(int j=0;j<n-1;j++) {
 				if(arr[j][i]==arr[j+1][i]) {
 					cnt++;
-				}else {
 					max=Math.max(max, cnt);
+				}else {
 					cnt=1;
 				}
 			}
-			max=Math.max(max, cnt);
 		}
 		
 	}
