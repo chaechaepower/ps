@@ -1,0 +1,20 @@
+-- 1세대: 1,2
+-- 2세대: 3,4,5
+-- 3세대: 6,7
+-- 4세대: 8
+
+    
+
+
+
+SELECT C.ID AS ID
+FROM (SELECT B.ID AS SEC_PAR_ID
+    FROM ECOLI_DATA A
+        JOIN ECOLI_DATA B
+        ON A.ID=B.PARENT_ID
+    WHERE A.PARENT_ID IS NULL) AB
+    JOIN ECOLI_DATA C
+    ON AB.SEC_PAR_ID=C.PARENT_ID
+
+
+
