@@ -1,0 +1,21 @@
+
+
+
+
+SELECT CAR_ID,
+    CASE
+        WHEN (
+            SELECT 1
+            FROM CAR_RENTAL_COMPANY_RENTAL_HISTORY
+            WHERE START_DATE<='2022-10-16' AND '2022-10-16' <=END_DATE
+            AND CAR_ID=C.CAR_ID
+        ) = 1
+        THEN '대여중'
+        ELSE '대여 가능'
+    END AS AVAILABILITY
+
+FROM CAR_RENTAL_COMPANY_RENTAL_HISTORY C
+
+GROUP BY CAR_ID
+
+ORDER BY CAR_ID DESC
