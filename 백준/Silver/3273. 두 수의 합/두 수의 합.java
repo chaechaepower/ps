@@ -16,25 +16,24 @@ public class Main {
 		
 		StringTokenizer st=new StringTokenizer(br.readLine());
 		
-		Map<Integer, Boolean> map=new HashMap<>();
+		Set<Integer> set=new HashSet<>();
 		
 		while(n-->0) {
-			map.put(Integer.parseInt(st.nextToken()), false);
+			set.add(Integer.parseInt(st.nextToken()));
 		}
 		
 		int x=Integer.parseInt(br.readLine());
-		
-		Set<Integer> keySet=new HashSet<>(map.keySet());
 		int cnt=0;
+		boolean[] isChecked=new boolean[1000000];
 		
-		for(int k:keySet) {
+		for(int k:set) {
 			int diff=x-k;
-			map.put(k, true);
+			isChecked[k]=true;
 			
-			if(keySet.contains(diff)) { //차이에 해당하는 수가 존재하고, 
-				if(!map.get(diff)) { //아직 그 수를 카운팅 안했다면
+			if(set.contains(diff)) {
+				if(!isChecked[diff]) {
+					isChecked[diff]=true;
 					cnt++;
-					map.put(diff, true);
 				}
 			}
 		}
@@ -45,3 +44,5 @@ public class Main {
 	
 }
 	
+
+
