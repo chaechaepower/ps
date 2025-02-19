@@ -34,7 +34,6 @@ public class Main {
 		
 		control();
 		System.out.println(days);
-		
 	}
 	
 	static void control() {
@@ -47,6 +46,7 @@ public class Main {
 			for(int i=0;i<n*n;i++) {
 				if(!adjList[i].isEmpty()) {
 					flag=true;
+					break;
 				}
 			}
 			
@@ -56,9 +56,7 @@ public class Main {
 			}else {
 				return;
 			}
-			
 		}
-		
 	}
 	
 	//국경선을 연다. 
