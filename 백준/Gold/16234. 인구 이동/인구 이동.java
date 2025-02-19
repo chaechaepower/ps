@@ -2,7 +2,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -11,8 +13,10 @@ public class Main {
 	static int[][] ground;
 	static int[] dr= {0,0,1,-1};
 	static int[] dc= {1,-1,0,0};
-	static List<Integer>[] adjList;
 	static int days; //정답 
+	static boolean[][] visited;
+	static List<int[]> list;
+	static int popSum;
 	
 	public static void main(String[] args) throws IOException {
 		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
@@ -23,7 +27,6 @@ public class Main {
 		r=Integer.parseInt(st.nextToken());
 		
 		ground=new int[n][n];
-		adjList=new ArrayList[n*n]; // ground[r][m] <-> adjList[r/n][r%n]
 				
 		for(int i=0;i<n;i++) {
 			st=new StringTokenizer(br.readLine());
@@ -31,121 +34,116 @@ public class Main {
 				ground[i][j]=Integer.parseInt(st.nextToken());
 			}
 		}
+		callBfs();
 		
-		control();
 		System.out.println(days);
 	}
 	
-	static void control() {
+	static void callBfs() {
 		
-		while(true) {
+		while(true) { //매 반복마다 days++ 
 			
-			openBoundray();
+			visited=new boolean[n][n];
+			boolean isMove=false;
 			
-			boolean flag=false;
-			for(int i=0;i<n*n;i++) {
-				if(!adjList[i].isEmpty()) {
-					flag=true;
-					break;
+			for(int i=0;i<n;i++) {
+				for(int j=0;j<n;j++) {
+					if(!visited[i][j]) {
+						list=new ArrayList<>();
+						popSum=0;
+						bfs(i,j);
+					}
+					
+					if(list.size()>1) { //연합 나라가 2개 이상
+						//인구수 갱신 
+						imigration();
+						isMove=true; 
+					}
 				}
 			}
 			
-			if(flag) {
-				imigration();
-				days++;
+			if(!isMove) {
+				break;
 			}else {
-				return;
+				days++; 
 			}
-		}
-	}
-	
-	//국경선을 연다. 
-	static void openBoundray() {
-		boolean[][] visited=new boolean[n][n];
-		for(int i=0;i<n*n;i++) {
-			adjList[i]=new ArrayList<>();
 		}
 		
-		for(int i=0;i<n;i++) {
-			for(int j=0;j<n;j++) {
-				//i행 j열의 인접한 나라에 대해 조사 
-				int nowPop=ground[i][j];
-				visited[i][j]=true;
-				
-				for(int k=0;k<4;k++) {
-					int newR=i+dr[k];
-					int newC=j+dc[k];
-					
-					if(newR<0 || newR>n-1 || newC<0 || newC>n-1) {
-						continue;
-					}
-					
-					if(!visited[newR][newC]) {
-						
-						int newPop=ground[newR][newC];
-						int diffPop=Math.abs(newPop-nowPop); //두 인접한 나라의 인구수 
-						
-						if(l<=diffPop && diffPop<=r) {
-							int nowIdx=n*i+j; //i,j를 1차원 배열로 인덱싱
-							int newIdx=n*newR+newC; 
-							
-							//인접리스트에 추가 
-							adjList[nowIdx].add(newIdx);
-							adjList[newIdx].add(nowIdx);
-						}
-					}
-				}
-			}
-		}
-	}	
+	}
 	
-	//연합을 구해서 인구이동을 한다. 
 	static void imigration() {
-		boolean[] visited=new boolean[n*n]; //연합 구할 때 방문 여부 
-		List<Integer> nations;//연합에 포함된 나라 
+		int pop=popSum/list.size();
 		
-		for(int i=0;i<n*n;i++) {
+		for(int[] pos:list) {
+			int r=pos[0];
+			int c=pos[1];
 			
-			if(adjList[i].isEmpty() || visited[i]) {
-				continue;
-			}
-			nations=new ArrayList<>();
-			
-			dfs(i, visited, nations);
-			
-			int imiPop=0;//갱신할 인구 수 
-			
-			//갱신할 인구 수를 구한다.
-			int popSum=0; //연합 나라의 총 인구 수 
-			for(int e:nations) {
-				int row=e/n;
-				int col=e%n;
-				popSum+=ground[row][col];
-			}
-			imiPop=popSum/nations.size();
-			
-			//갱신한다. 
-			for(int e:nations) {
-				int row=e/n;
-				int col=e%n;
-				ground[row][col]=imiPop;
-			}
+			ground[r][c]=pop;
 		}
-		
 	}
 	
-	//연합 나라 구하기 
-	static void dfs(int v, boolean[] visited, List<Integer> nations) {
-		visited[v]=true;
-		nations.add(v);
-		
-		for(int e: adjList[v]) {
-			if(!visited[e]) {
-				dfs(e, visited, nations);
+	static void bfs(int row, int col) {
+		Queue<int[]> queue=new LinkedList<>();
+		queue.offer(new int[] {row,col});
+		visited[row][col]=true; 
+		list.add(new int[] {row,col});
+		popSum+=ground[row][col];
+				
+		while(!queue.isEmpty()) {
+			int[] now=queue.poll();
+			int nowR=now[0];
+			int nowC=now[1];
+			
+			for(int i=0;i<4;i++) {
+				int newR=nowR+dr[i];
+				int newC=nowC+dc[i];
+				
+				if(newR<0 || newR>n-1 || newC<0 || newC>n-1) {
+					continue;
+				}
+				
+				if(visited[newR][newC]) {
+					continue;
+				}
+				
+				int diff=Math.abs(ground[nowR][nowC]-ground[newR][newC]);
+								
+				if(l<=diff && diff<=r) {
+					queue.offer(new int[] {newR, newC});
+					visited[newR][newC]=true;
+					list.add(new int[] {newR, newC});
+					popSum+=ground[newR][newC];
+				}
 			}
 		}
 		
 	}
 }
+	
 
 
+/*
+ * bfs로 바로 연합을 구한다..
+while(
+	모든 행,열에 대해 반복 
+		if(!visited[][]인 곳 방문)
+		
+			while(큐가 빌 때까지){
+				list(연합 나라들)에 노드 넣기 
+				sum 구하기 
+			}
+			
+		while문 한 번 끝나면 하나의 연합을 구할 수 있음.
+		list가 1이상이면 그 연합에 대해 인구수 갱신 
+		isMove=true;
+	
+	if(!isMove){
+		끝. 
+	}
+)
+
+그다음 while문은 !visited[]인 곳 방문
+	
+
+ * 
+ * */
