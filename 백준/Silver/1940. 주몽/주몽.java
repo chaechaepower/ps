@@ -20,24 +20,25 @@ public class Main {
 		Arrays.sort(arr);
 		
 		int cnt=0;
-		for(int i=0;i<n-1;i++) {
-			for(int j=i+1;j<n;j++) {
-				int sum=arr[i]+arr[j];
-				
-				if(sum==m) {
-					cnt++;
-					break;
-				}
-				else if(sum>m) {
-					break;
-				}
+		int i=0;
+		int j=n-1;
+		
+		while(i<j) {
+			int sum=arr[i]+arr[j];
+			
+			if(sum<m) {
+				i++;
+			}
+			else if(sum>m) {
+				j--;
+			}
+			else {
+				i++;
+				j--;
+				cnt++;
 			}
 		}
-		
 		
 		System.out.println(cnt);
 	}
 }
-
-
- 
