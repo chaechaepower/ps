@@ -9,29 +9,30 @@ public class Main {
 		BufferedReader br= new BufferedReader(new InputStreamReader(System.in));
 		int n=Integer.parseInt(br.readLine());
 		
-		int cnt=0;
+		int cnt=1;
+		int start=1;
+		int end=1;
+		int sum=1;
 		
-		for(int i=1;i<=n;i++) {
-			int start=i;
-			int sum=0;
-			
-			for(int j=start; j<=n; j++) {
-				sum+=j;
-				if(sum>n) {
-					break;
-				}
-				
-				if(sum==n) {
-					cnt++;
-					break;
-				}
+		while(start<n) {
+			if(sum<n) {
+				end++;
+				sum+=end;
+			}
+			else if(sum>n) {
+				sum-=start;
+				start++;
+			}  
+			else { //sum==n
+				cnt++;
+				end++;
+				sum+=end;
 			}
 		}
+		
 		
 		System.out.println(cnt);
 	}
 }
 
 
-
- 
