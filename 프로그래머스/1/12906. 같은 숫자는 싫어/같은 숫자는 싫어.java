@@ -1,27 +1,17 @@
 import java.util.*;
 
 public class Solution {
-    public int[] solution(int []arr) {
-        Deque<Integer> deque= new ArrayDeque<>();
+    public List<Integer>  solution(int []arr) {
+        List<Integer> list=new ArrayList<>();
         
+        int preNum=10;
         for(int e:arr){
-            if(deque.isEmpty()){
-                deque.offerFirst(e);
-                continue;
+            if(e!=preNum){
+                list.add(e);
+                preNum=e;
             }
-            
-            if(deque.peekFirst()==e){
-                continue;
-            }
-            
-            deque.offerFirst(e);
         }
         
-        int[] answer=new int[deque.size()];
-        for(int i=0;i<answer.length;i++){
-            answer[i]=deque.pollLast();
-        }
-        
-        return answer;
+        return list;
     }
 }
