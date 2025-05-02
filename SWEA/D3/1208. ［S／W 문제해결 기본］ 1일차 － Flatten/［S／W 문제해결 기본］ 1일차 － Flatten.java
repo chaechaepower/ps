@@ -18,23 +18,47 @@ public class Solution {
 			int dumpN=Integer.parseInt(br.readLine());
 			
 			StringTokenizer st=new StringTokenizer(br.readLine());
-			int[] height=new int[100];
+			int[] height=new int[101];
+			
+			int min=Integer.MAX_VALUE;
+			int max=Integer.MIN_VALUE;
 			
 			for(int i=0;i<100;i++) {
-				height[i]=Integer.parseInt(st.nextToken());
+				int num=Integer.parseInt(st.nextToken());
+				height[num]++;
+				max=Math.max(max, num);
+				min=Math.min(min, num);
 			}
-			
-			Arrays.sort(height);
-			
-			
+						
 			while(dumpN-->0) {
-				height[99]--;
-				height[0]++;
-				Arrays.sort(height);
+				height[max]--;
+				height[max-1]++;
+				height[min]--;
+				height[min+1]++;
+
+				if(height[max]==0){
+					for(int i=max-1;i>=0;i--) {
+						if(height[i]>0) {
+							max=i;
+							break;
+						}
+					}
+				}
+				
+				if(height[min]==0){
+					for(int i=min+1;i<101;i++) {
+						if(height[i]>0) {
+							min=i;
+							break;
+						}
+					}
+				}
+				
 			}
 		
 			
-			System.out.println("#"+t+" "+(height[99]-height[0]));
+			
+			System.out.println("#"+t+" "+(max-min));
 		}
 	}
 
