@@ -41,27 +41,26 @@ public class Solution {
 
 			maxGradeSum = Integer.MIN_VALUE;
 
-			dfs(0, 0, 0, 0);
+			dfs(0, 0, 0);
 			System.out.printf("#%d %d\n", t, maxGradeSum);
 		}
 	}
 
-	public static void dfs(int calSum, int gradeSum, int start, int depth) {
-		if (depth > n) {
-			return;
-		}
-
-		else {
+	public static void dfs(int calSum, int gradeSum, int count) {
+		if (count == n) {
 			if (calSum <= lessCal) {
 				if (gradeSum > maxGradeSum) {
 					maxGradeSum = gradeSum;
 				}
 			}
+			return;
 		}
 
-		for (int i = start; i < n; i++) {
-			dfs(calSum + ingredients[i].cal, gradeSum + ingredients[i].grade, i + 1, depth + 1);
-		}
+		// 포함하는 경우
+		dfs(calSum + ingredients[count].cal, gradeSum + ingredients[count].grade, count + 1);
+
+		// 포함하지 않는 경우
+		dfs(calSum, gradeSum, count + 1);
 	}
 
 }
