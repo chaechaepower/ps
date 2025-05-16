@@ -12,30 +12,13 @@ public class Solution {
 		for (int t = 1; t <= 10; t++) {
 			br.readLine();
 			
-			String str=br.readLine();
+			String target=br.readLine();
 			String line=br.readLine();
 			
-			int idx=0;
 			int answer=0;
 			
-			for(int i=0;i<line.length();i++) {
-				idx=i;
-				boolean isSame=true;
-				
-				for(int j=0;j<str.length() ;j++) {
-					
-					if(idx>=line.length()) {
-						isSame=false;
-						break;
-					}
-					
-					if(line.charAt(idx++)!=str.charAt(j)) {
-						isSame=false;
-						break;
-					}
-				}
-				
-				if(isSame) {
+			for(int i=0;i<=line.length()-target.length();i++) {
+				if(target.equals(line.substring(i,i+target.length()))) {
 					answer++;
 				}
 			}
