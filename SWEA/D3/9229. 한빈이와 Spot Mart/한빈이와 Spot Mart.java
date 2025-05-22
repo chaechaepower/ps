@@ -5,11 +5,6 @@ import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Solution {
-	static int[] weights;
-	static int n;
-	static int m;
-	static int maxWeight;
-	static int[] combi;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -18,40 +13,34 @@ public class Solution {
 		for (int t = 1; t <= testN; t++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
 
-			n = Integer.parseInt(st.nextToken());
-			m = Integer.parseInt(st.nextToken());
+			int n = Integer.parseInt(st.nextToken());
+			int m = Integer.parseInt(st.nextToken());
+			int[] weights = new int[n];
 
-			weights = new int[n];
 			st = new StringTokenizer(br.readLine());
-
 			for (int i = 0; i < n; i++) {
 				weights[i] = Integer.parseInt(st.nextToken());
 			}
 
-			combi = new int[2];
-			maxWeight = -1;
-			dfs(0, 0);
-			
-			System.out.printf("#%d %d\n", t, maxWeight);
-		}
-	}
+			Arrays.sort(weights);
 
-	static void dfs(int depth, int v) {
-		if (depth == 2) {
-			int total = 0;
-			for (int e : combi) {
-				total += e;
+			int start = 0;
+			int end = n - 1;
+			int max = -1;
+
+			while (start != end) {
+				int sum = weights[start] + weights[end];
+
+				if (sum > m) {
+					end--;
+				} 
+				else {
+					max = Math.max(max, sum);
+					start++;
+				}
 			}
 			
-			if(total<=m) {
-				maxWeight = Math.max(maxWeight, total);
-			}
-			return;
-		}
-
-		for (int i = v; i < n; i++) {
-			combi[depth] = weights[i];
-			dfs(depth + 1, i + 1);
+			System.out.printf("#%d %d\n",t,max);
 		}
 	}
 }
