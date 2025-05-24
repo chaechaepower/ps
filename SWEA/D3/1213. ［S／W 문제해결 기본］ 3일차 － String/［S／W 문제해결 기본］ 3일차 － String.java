@@ -1,30 +1,31 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.StringTokenizer;
 
 public class Solution {
-
+	
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
 		
-		for (int t = 1; t <= 10; t++) {
+		//int testN=Integer.parseInt(br.readLine());
+		
+		for(int t=1;t<=10;t++) {
 			br.readLine();
-			
 			String target=br.readLine();
-			String line=br.readLine();
+			String str=br.readLine();
 			
-			int answer=0;
+			int count=0;
 			
-			for(int i=0;i<=line.length()-target.length();i++) {
-				if(target.equals(line.substring(i,i+target.length()))) {
-					answer++;
+			for(int i=0;i<=str.length()-target.length();i++) {
+				String part=str.substring(i,i+target.length());
+				
+				if(part.equals(target)) {
+					count++;
 				}
 			}
 			
-			System.out.printf("#%d %d\n",t,answer);
+			System.out.printf("#%d %d\n",t,count);
 		}
 	}
-
 }
