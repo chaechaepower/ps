@@ -3,38 +3,46 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-public class Main{
-    
-    public static void main(String[] args) throws IOException{
-        BufferedReader br=new BufferedReader(new InputStreamReader(System.in));      
-        StringTokenizer st=new StringTokenizer(br.readLine());
-        
-        int n=Integer.parseInt(st.nextToken());
-        int m=Integer.parseInt(st.nextToken());
+public class Main {
 
-        int[][] arr=new int[7][2];
-        while(n-->0){
-            st=new StringTokenizer(br.readLine());
-            int gender=Integer.parseInt(st.nextToken());
-            int grade=Integer.parseInt(st.nextToken());
-            
-            arr[grade][gender]++;
-        }
+	public static void main(String[] args) throws IOException {
 
-        int sum=0;
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
 
-        for(int i=0;i<2;i++){
-            for(int j=1;j<=6;j++){
-                if(arr[j][i]>0 && arr[j][i]<=m){
-                    sum+=1;
-                }
-                else{
-                    sum+=arr[j][i]/m+arr[j][i]%m;
-                }
-            }
-        }
+		int n = Integer.parseInt(st.nextToken());
+		int k = Integer.parseInt(st.nextToken());
 
-        System.out.println(sum);
-    }
+		int[][] students = new int[2][7]; // [i][0]은 사용 x
+
+		for (int i = 0; i < n; i++) {
+			st = new StringTokenizer(br.readLine());
+
+			int s = Integer.parseInt(st.nextToken());
+			int y = Integer.parseInt(st.nextToken());
+
+			students[s][y]++;
+		}
+
+		int sum = 0;
+
+		for (int i = 0; i < 2; i++) {
+			for (int j = 1; j < 7; j++) {
+				if (students[i][j] == 0) {
+					continue;
+				} else if (students[i][j] < k) {
+					sum++;
+				} else {
+					if (students[i][j] % k == 0) {
+						sum += students[i][j] / k;
+					} else {
+						sum += students[i][j] / k + 1;
+					}
+				}
+
+			}
+		}
+
+		System.out.println(sum);
+	}
 }
-
