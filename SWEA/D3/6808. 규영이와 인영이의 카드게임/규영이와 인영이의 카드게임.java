@@ -1,85 +1,85 @@
-
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 public class Solution {
-	static int[] gyu;
-	static int[] in;
-	static int[] inSeq;
-	static boolean[] visited;
-	static int winCount = 0;
-	static int loseCount = 0;
+    static List<Integer> inCards;
+    static List<Integer> gyoCards;
+    static boolean[] visited;
+    static List<Integer> randInCards;
+    static int inwin;
+    static int inLose;
+    
+    public static void main(String[] args) throws IOException{
+        BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
 
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int testN=Integer.parseInt(br.readLine());
 
-		int testN = Integer.parseInt(br.readLine());
+        for(int t=1;t<=testN;t++){
+            inCards=new ArrayList<>();
+            gyoCards=new ArrayList<>();
 
-		for (int t = 1; t <= testN; t++) {
-			StringTokenizer st = new StringTokenizer(br.readLine());
-			gyu = new int[9];
-			boolean[] isOccuipied = new boolean[19];
+            StringTokenizer st=new StringTokenizer(br.readLine());
+            
+            for(int i=0;i<9;i++){
+                gyoCards.add(Integer.parseInt(st.nextToken()));
+            }
 
-			for (int i = 0; i < 9; i++) {
-				int num = Integer.parseInt(st.nextToken());
-				gyu[i] = num;
-				isOccuipied[num] = true;
-			}
+            for(int i=1;i<19;i++){
+                if(gyoCards.contains(i)){
+                    continue;
+                }
+                inCards.add(i);
+            }
 
-			in = new int[9];
-			int idx = 0;
-			for (int i = 1; i < 19; i++) {
-				if (isOccuipied[i] == false) {
-					in[idx++] = i;
-				}
-			}
+            randInCards=new ArrayList<>();
+            visited=new boolean[9];
+            inwin=0; inLose=0;
+            dfs(0,0);
 
-			inSeq = new int[9];
-			visited = new boolean[9];
-			winCount = 0;
-			loseCount = 0;
-			dfs(0);
+            System.out.printf("#%d %d %d\n",t,inLose,inwin);
+        }
+    }
 
-			System.out.printf("#%d %d %d\n", t, winCount, loseCount);
-		}
-	}
+    public static void dfs(int v, int depth){
+        if(depth==9){
+            game();
+            return;
+        }
 
-	private static void dfs(int depth) {
-		if (depth == 9) {
-			// 게임 시작
-			game();
-			return;
-		}
+        for(int i=0;i<9;i++){
+            if(!visited[i]){
+                visited[i]=true;
+                randInCards.add(inCards.get(i));
+                dfs(i,depth+1);
+                randInCards.remove(randInCards.size()-1);
+                visited[i]=false;
 
-		for (int i = 0; i < 9; i++) {
-			if (!visited[i]) {
-				visited[i] = true;
-				inSeq[depth] = in[i];
-				dfs(depth + 1);
-				visited[i] = false;
-			}
-		}
-	}
+            }
+        }
+    }
 
-	private static void game() {
-		int gyuTotal = 0;
-		int inTotal = 0;
+    public static void game(){
+        int gyoSum=0;
+        int inSum=0;
 
-		for (int i = 0; i < 9; i++) {
-			if (gyu[i] > inSeq[i]) {
-				gyuTotal += gyu[i] + inSeq[i];
-			} else {
-				inTotal += gyu[i] + inSeq[i];
-			}
-		}
+        for(int i=0;i<9;i++){
+            if(randInCards.get(i)>gyoCards.get(i)){
+                inSum+=randInCards.get(i)+gyoCards.get(i);
+            }
+            else{
+                gyoSum+=randInCards.get(i)+gyoCards.get(i);
+            }
+        }
 
-		if (gyuTotal > inTotal) {
-			winCount++;
-		} else if (gyuTotal < inTotal) {
-			loseCount++;
-		}
-	}
+        if(inSum>gyoSum){
+            inwin++;
+        } 
+        else{
+            inLose++;
+        }
+    }    
 }
