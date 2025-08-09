@@ -3,64 +3,49 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-class Ingredient {
-	int grade;
-	int cal;
-
-	public Ingredient(int grade, int cal) {
-		this.grade = grade;
-		this.cal = cal;
-	}
-}
-
 public class Solution {
-	static int n;
-	static int lessCal;
-	static Ingredient[] ingredients;
-	static int maxGradeSum;
+
+	static int n, l; // n은 재료 수, l은 제한 칼로리
+	static int[][] ingridents; // 재료 정보 (맛, 칼로리)
+	static int max;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
 		int testN = Integer.parseInt(br.readLine());
 
 		for (int t = 1; t <= testN; t++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
 
 			n = Integer.parseInt(st.nextToken());
-			lessCal = Integer.parseInt(st.nextToken());
-			ingredients = new Ingredient[n];
+			l = Integer.parseInt(st.nextToken());
+			
+			ingridents = new int[n][2];
 
 			for (int i = 0; i < n; i++) {
 				st = new StringTokenizer(br.readLine());
-				int grade = Integer.parseInt(st.nextToken());
-				int cal = Integer.parseInt(st.nextToken());
 
-				ingredients[i] = new Ingredient(grade, cal);
+				ingridents[i][0] = Integer.parseInt(st.nextToken());
+				ingridents[i][1] = Integer.parseInt(st.nextToken());
 			}
-
-			maxGradeSum = Integer.MIN_VALUE;
-
-			dfs(0, 0, 0);
-			System.out.printf("#%d %d\n", t, maxGradeSum);
+			
+			max = Integer.MIN_VALUE;
+			dfs(0,0,0);
+			System.out.printf("#%d %d\n",t,max);
 		}
 	}
 
-	public static void dfs(int calSum, int gradeSum, int count) {
-		if (count == n) {
-			if (calSum <= lessCal) {
-				if (gradeSum > maxGradeSum) {
-					maxGradeSum = gradeSum;
-				}
-			}
+	public static void dfs(int i, int calSum, int tasteSum) {
+		if (calSum >= l) {
 			return;
 		}
 
-		// 포함하는 경우
-		dfs(calSum + ingredients[count].cal, gradeSum + ingredients[count].grade, count + 1);
+		if (i == n) {
+			max = Math.max(max, tasteSum);
+			return;
+		}
 
-		// 포함하지 않는 경우
-		dfs(calSum, gradeSum, count + 1);
+		dfs(i + 1, calSum + ingridents[i][1], tasteSum + ingridents[i][0]);
+		dfs(i + 1, calSum, tasteSum);
 	}
-
 }
+
