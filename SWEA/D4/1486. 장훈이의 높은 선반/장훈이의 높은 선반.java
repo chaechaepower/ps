@@ -24,25 +24,22 @@ public class Solution {
 			}
 
 			min = Integer.MAX_VALUE;
-			dfs(0, 0, 0);
+			dfs(0, 0);
 			System.out.printf("#%d %d\n", t, min - b);
 		}
 	}
 
-	public static void dfs(int v, int depth, int sum) {
-		if (depth == n) {
-			if (sum >= b) {
-				min = Math.min(min, sum);
-			}
-			return;
-		}
-
+	public static void dfs(int i, int sum) {
 		if (sum >= b) {
 			min = Math.min(min, sum);
 			return;
 		}
+		
+		if (i == n) {
+			return;
+		}
 
-		dfs(v + 1, depth + 1, sum + arr[v]);
-		dfs(v + 1, depth + 1, sum);
+		dfs(i + 1, sum + arr[i]);
+		dfs(i + 1, sum);
 	}
 }
