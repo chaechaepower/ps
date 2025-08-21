@@ -1,16 +1,15 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Solution {
-
+	static int[][] clients;
 	static boolean[] visited;
-	static int n; // 고객 수
-	static int[] company;// 회사 좌표
-	static int[] home;// 집 좌표
-	static int[][] consumer; // 고객 번호를 인덱스로. 각 좌표 저장
 	static int min;
+	static int n;
+	static int[] business, home;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -18,64 +17,53 @@ public class Solution {
 
 		for (int t = 1; t <= testN; t++) {
 			n = Integer.parseInt(br.readLine());
-			company = new int[2];
-			consumer = new int[n][2];
+
+			business = new int[2];
 			home = new int[2];
 
 			StringTokenizer st = new StringTokenizer(br.readLine());
-
-			// 회사
-			company[0] = Integer.parseInt(st.nextToken());
-			company[1] = Integer.parseInt(st.nextToken());
-			// 집
+			
+			business[0] = Integer.parseInt(st.nextToken());
+			business[1] = Integer.parseInt(st.nextToken());
 			home[0] = Integer.parseInt(st.nextToken());
 			home[1] = Integer.parseInt(st.nextToken());
-			// 고객
+
+			clients = new int[n][2];
 			for (int i = 0; i < n; i++) {
-				consumer[i][0] = Integer.parseInt(st.nextToken());
-				consumer[i][1] = Integer.parseInt(st.nextToken());
+				clients[i][0] = Integer.parseInt(st.nextToken());
+				clients[i][1] = Integer.parseInt(st.nextToken());
 			}
-
-			min = Integer.MAX_VALUE;
-			visited = new boolean[n];
-			dfs(0, 0, 0, company[0], company[1]); // 노드, 깊이, 거리
-
-			System.out.printf("#%d %d\n", t, min);
+			
+			visited=new boolean[n];
+			min=Integer.MAX_VALUE;
+			dfs(0,business,0);
+			
+			System.out.printf("#%d %d\n",t,min);
 		}
 	}
 
-	public static void dfs(int v, int depth, int len, int preX, int preY) {
-		if (len >= min) {
+	public static void dfs(int depth, int[] prev, int total) {
+		if(total>min) return;
+		
+		if(depth==n) {
+			total+=Math.abs(prev[0]-home[0]) + Math.abs(prev[1]-home[1]);
+			min=Math.min(min, total);
 			return;
 		}
-
-		if (depth == n) {
-			// 집과의 거리 추가
-			len += calculateDistance(home[0], home[1], preX, preY);
-			min = Math.min(len, min);
-			return;
-		}
-
-		for (int i = 0; i < n; i++) {
-			if (!visited[i]) {
-				visited[i] = true;
-
-				int dis = 0;
-
-				// depth가 0인 경우 회사와 거리 계산
-				if (depth == 0) {
-					dis = calculateDistance(company[0], company[1], consumer[i][0], consumer[i][1]);
-				} else { // 아닌 경우, 이전 depth의 고객과 거리 계산
-					dis = calculateDistance(preX, preY, consumer[i][0], consumer[i][1]);
-				}
-
-				dfs(i, depth + 1, len + dis, consumer[i][0], consumer[i][1]);
-				visited[i] = false;
+		
+		for(int i=0;i<n;i++) {
+			if(!visited[i]) {
+				visited[i]=true;
+				int diff=Math.abs(prev[0]-clients[i][0]) + Math.abs(prev[1]-clients[i][1]);
+				dfs(depth+1, clients[i], total+diff);
+				visited[i]=false;
 			}
 		}
-	}
-
-	public static int calculateDistance(int x1, int y1, int x2, int y2) {
-		return Math.abs(x1 - x2) + Math.abs(y1 - y2);
 	}
 }
+
+/*
+ * 집 방문 순서 이동 거리가 최단 이동 거리보다 크면 바로 return 이전 위치 저장
+ * 
+ * 
+ */
