@@ -29,15 +29,12 @@ public class Solution {
 				union(a, b);
 			}
 
-			Set<Integer> set = new HashSet<>();
-			for (int i = 1; i < n + 1; i++) {
-				int root = find(i);
-				if (set.contains(root))
-					continue;
-				set.add(root);
+			int cnt=0;
+			for(int i=1;i<n+1;i++) {
+				if(find(i)==i) cnt++;
 			}
 
-			System.out.printf("#%d %d\n", t, set.size());
+			System.out.printf("#%d %d\n", t, cnt);
 		}
 	}
 
