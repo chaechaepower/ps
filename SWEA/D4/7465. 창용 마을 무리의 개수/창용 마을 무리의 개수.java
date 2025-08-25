@@ -1,8 +1,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.StringTokenizer;
 
 public class Solution {
@@ -29,9 +27,10 @@ public class Solution {
 				union(a, b);
 			}
 
-			int cnt=0;
-			for(int i=1;i<n+1;i++) {
-				if(find(i)==i) cnt++;
+			int cnt = 0;
+			for (int i = 1; i < n + 1; i++) {
+				if (parents[i] == i)
+					cnt++;
 			}
 
 			System.out.printf("#%d %d\n", t, cnt);
