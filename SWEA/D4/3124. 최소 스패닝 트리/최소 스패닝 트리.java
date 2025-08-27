@@ -1,98 +1,90 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Solution {
 
-	static class Edge implements Comparable<Edge> {
-		int from, to, weight;
+	static class Vertex implements Comparable<Vertex> {
+		int n;
+		int w;
 
-		public Edge(int from, int to, int weight) {
+		public Vertex(int n, int w) {
 			super();
-			this.from = from;
-			this.to = to;
-			this.weight = weight;
+			this.n = n;
+			this.w = w;
 		}
 
 		@Override
-		public int compareTo(Solution.Edge o) {
-			return this.weight - o.weight;
+		public int compareTo(Solution.Vertex o) {
+			return Integer.compare(this.w, o.w);
 		}
-	}
-
-	static int V, E;
-	static Edge[] edges;
-	static int[] parents;
-
-	static void make() {
-		for (int i = 1; i < V+1; i++) {
-			parents[i] = i;
-		}
-	}
-
-	static int find(int a) {
-		if (parents[a] == a)
-			return a;
-		return parents[a] = find(parents[a]);
-	}
-
-	static boolean union(int a, int b) {
-		int aRoot = find(a);
-		int bRoot = find(b);
-		if (aRoot == bRoot)
-			return false;
-
-		if (aRoot < bRoot)
-			parents[bRoot] = aRoot;
-		else
-			parents[aRoot] = bRoot;
-
-		return true;
 	}
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int testN = Integer.parseInt(br.readLine());
 
-		StringTokenizer st;
 		for (int t = 1; t <= testN; t++) {
-			st = new StringTokenizer(br.readLine());
-			V = Integer.parseInt(st.nextToken());
-			E = Integer.parseInt(st.nextToken());
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			int v = Integer.parseInt(st.nextToken());
+			int e = Integer.parseInt(st.nextToken());
 
-			edges = new Edge[E];
-			parents = new int[V+1];
+			boolean[] visited = new boolean[v + 1]; // MST에 포함되는지 안되는지
+			int[] minEdge = new int[v + 1]; // 각 정점에 연결된 최소 비용 간선
+			List<Vertex>[] edgeList = new ArrayList[v + 1]; // 간선 가중치
 
-			for (int i = 0; i < E; i++) {
-				st = new StringTokenizer(br.readLine());
-				int from = Integer.parseInt(st.nextToken());
-				int to = Integer.parseInt(st.nextToken());
-				int weight = Integer.parseInt(st.nextToken());
-
-				edges[i] = new Edge(from, to, weight);
+			for (int i = 1; i < v + 1; i++) {
+				edgeList[i] = new ArrayList<>();
 			}
 
-			Arrays.sort(edges);
-			make();
+			while (e-- > 0) {
+				st = new StringTokenizer(br.readLine());
+				int v1 = Integer.parseInt(st.nextToken());
+				int v2 = Integer.parseInt(st.nextToken());
+				int w = Integer.parseInt(st.nextToken());
 
-			int cnt = 0;
+				edgeList[v1].add(new Vertex(v2, w));
+				edgeList[v2].add(new Vertex(v1, w));
+			}
+
+			Arrays.fill(minEdge, Integer.MAX_VALUE);
+			minEdge[1] = 0;
 			long result = 0;
+			PriorityQueue<Vertex> pq = new PriorityQueue<>();
+			pq.offer(new Vertex(1, 0));
 
-			for (Edge edge : edges) {
-				if (!union(edge.from, edge.to))
+			while (!pq.isEmpty()) {
+				// 1. 비정점 트리 중에 최소 비용 간선 선택
+				Vertex cur = pq.poll();
+
+				if (visited[cur.n])
 					continue;
 
-				cnt++;
-				result += edge.weight;
+				result += cur.w;
+				visited[cur.n] = true;
 
-				if (cnt == V - 1)
-					break;
+				// 2. 선택된 노드에 연결된 간선이 기존 값보다 작을 경우 갱신
+				for (int i = 0; i < edgeList[cur.n].size(); i++) {
+					Vertex vertex = edgeList[cur.n].get(i);
+					int edge = vertex.w;
+
+					if (visited[vertex.n])
+						continue; // 이미 MST
+
+					if (edge < minEdge[i]) {
+						minEdge[i] = edge;
+					}
+					
+					pq.offer(new Vertex(vertex.n,edge));
+				}
 			}
 
 			System.out.printf("#%d %d\n", t, result);
 		}
-
 	}
 }
