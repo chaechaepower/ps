@@ -53,7 +53,6 @@ public class Solution {
 			}
 
 			Arrays.fill(minEdge, Integer.MAX_VALUE);
-			minEdge[1] = 0;
 			long result = 0;
 			PriorityQueue<Vertex> pq = new PriorityQueue<>();
 			pq.offer(new Vertex(1, 0));
@@ -71,16 +70,15 @@ public class Solution {
 				// 2. 선택된 노드에 연결된 간선이 기존 값보다 작을 경우 갱신
 				for (int i = 0; i < edgeList[cur.n].size(); i++) {
 					Vertex vertex = edgeList[cur.n].get(i);
-					int edge = vertex.w;
 
 					if (visited[vertex.n])
 						continue; // 이미 MST
 
-					if (edge < minEdge[i]) {
-						minEdge[i] = edge;
+					if (vertex.w < minEdge[i]) {
+						minEdge[i] = vertex.w;
 					}
-					
-					pq.offer(new Vertex(vertex.n,edge));
+
+					pq.offer(new Vertex(vertex.n, vertex.w));
 				}
 			}
 
