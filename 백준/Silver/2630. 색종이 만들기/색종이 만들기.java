@@ -1,50 +1,65 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
-	static int white;
-	static int blue;
-	static int[][] arr;
+	static int[][] board;
+	static int n, white, blue;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int n = Integer.parseInt(br.readLine());
+		n = Integer.parseInt(br.readLine());
 
-		arr = new int[n][n];
+		board = new int[n][n];
+
 		StringTokenizer st;
-
 		for (int i = 0; i < n; i++) {
 			st = new StringTokenizer(br.readLine());
+
 			for (int j = 0; j < n; j++) {
-				arr[i][j] = Integer.parseInt(st.nextToken());
+				board[i][j] = Integer.parseInt(st.nextToken());
 			}
 		}
 
-		recur(n, 0, 0);
-		System.out.println(white);
-		System.out.println(blue);
+		recur(0,0,n);
+		System.out.println(white + "\n" + blue);
 	}
 
-	public static void recur(int size, int r, int c) {
-		int color = arr[r][c];
+	private static void recur(int startR, int startC, int size) {
+		
+		if(size==1 || isColorSame(startR, startC, size)) {
+			int color=board[startR][startC];
+			
+			if(color==1) blue++;
+			else white++;
+			return;
+		}
+		
+		else {
+			recur(startR, startC, size/2);
+			recur(startR, startC+size/2, size/2);
+			recur(startR+size/2, startC, size/2);
+			recur(startR+size/2, startC+size/2, size/2);
+		}
+	}
 
-		for (int i = r; i < r + size; i++) {
-			for (int j = c; j < c + size; j++) {
-				if (arr[i][j] != color) {
-					int halfSize = size / 2;
-					recur(halfSize, r, c);
-					recur(halfSize, r, c + halfSize);
-					recur(halfSize, r + halfSize, c);
-					recur(halfSize, r + halfSize, c + halfSize);
-					return;
+	private static boolean isColorSame(int startR, int startC, int size) {
+		
+		for(int i=startR;i<startR+size;i++) {
+			for(int j=startC;j<startC+size;j++) {
+				if(board[startR][startC]!=board[i][j]) {
+					return false;
 				}
 			}
 		}
-
-		if (color == 1)
-			blue++;
-		else
-			white++;
-
+		return true;
 	}
 }
+
+/*
+ * 1. 정사각형 내 모든 원소가 같은지 확인 
+ * 1-1. 같으면 그 색깔 +1 후 return 
+ * 1-2. 다르면 n/2 나눈 뒤 호출
+ * 
+ */
