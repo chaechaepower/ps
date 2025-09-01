@@ -7,65 +7,76 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
+	static class Node {
+		int to, weight;
+
+		public Node(int to, int weight) {
+			super();
+			this.to = to;
+			this.weight = weight;
+		}
+	}
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int V = Integer.parseInt(st.nextToken());
 		int E = Integer.parseInt(st.nextToken());
-
 		int start = Integer.parseInt(br.readLine());
-		
-		List<int[]>[] adjList=new ArrayList[V+1]; //0은 사용 x 
-		for(int i=1;i<V+1;i++) adjList[i]=new ArrayList<>();
 
-		int[] minDistance = new int[V+1]; // start 저점에서 자신으로의 최소 비용
-		boolean[] visited = new boolean[V+1];
+		List<Node>[] adjList = new ArrayList[V + 1]; /// 인접 리스트
+		for (int i = 1; i < V + 1; i++)
+			adjList[i] = new ArrayList<>();
 
-		for (int i = 0; i < E; i++) { // 인접리스트 생성
+		while (E-- > 0) {
 			st = new StringTokenizer(br.readLine());
 			int u = Integer.parseInt(st.nextToken());
 			int v = Integer.parseInt(st.nextToken());
 			int w = Integer.parseInt(st.nextToken());
-			adjList[u].add(new int[] {v,w});
+
+			adjList[u].add(new Node(v, w));
 		}
 
-		final int INF = Integer.MAX_VALUE;
-		Arrays.fill(minDistance, INF);
-		minDistance[start] = 0;
+		boolean[] visited = new boolean[V + 1];
+		int[] minList = new int[V + 1];
+		int INF = Integer.MAX_VALUE;
+		Arrays.fill(minList, INF);
+		minList[start] = 0;
 
-		for (int i = 1; i < V+1; i++) {
-			// step1. 미방문 정점중에 출발점에서 가장 가까운 정점 찾기
-			int min = INF;
+		for (int i = 0; i < V; i++) {
+			int minCost = Integer.MAX_VALUE;
 			int stopOver = -1;
 
-			for (int j = 1; j < V+1; j++) {
-				if (visited[j]) continue;
-				
-				if (min > minDistance[j]) {
-					min = minDistance[j];
+			// 1. 방문하지 않은 정점 중 최소 비용 정점 선택
+			for (int j = 1; j < V + 1; j++) {
+				if (visited[j])
+					continue;
+
+				if (minList[j] < minCost) {
+					minCost = minList[j];
 					stopOver = j;
 				}
 			}
-			
-			if (stopOver == -1) break;
+
+			if (stopOver == -1) {
+				break;
+			}
+
 			visited[stopOver] = true;
 
-			// step2. step1에서 선택된 정점을 경유지로 하여, 아직 미방문 정점으로의 경로 비용 계산 후 최소비용으로 업데이트..
-			for(int[] node : adjList[stopOver]) {
-				int v=node[0];
-				int w=node[1];
-				
-				if(visited[v]) continue;
-				
-				if(min+w < minDistance[v]) {
-					minDistance[v] = min + w;
+			// 2. 그 정점과 연결된 비방문 정점에 대해 거리 비교 후 작은 값으로 갱신
+			for (Node node : adjList[stopOver]) {
+				if (visited[node.to])
+					continue;
+
+				if (minCost + node.weight < minList[node.to]) {
+					minList[node.to] = minCost + node.weight;
 				}
 			}
 		}
 
-		for(int i=1;i<V+1;i++) {
-			System.out.println(minDistance[i]==INF?"INF":minDistance[i]);
+		for (int i = 1; i < V + 1; i++) {
+			System.out.println(minList[i] == INF ? "INF" : minList[i]);
 		}
 	}
 }
