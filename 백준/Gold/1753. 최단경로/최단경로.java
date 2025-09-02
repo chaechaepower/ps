@@ -4,10 +4,12 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Main {
-	static class Node {
+
+	static class Node implements Comparable<Node>{
 		int to, weight;
 
 		public Node(int to, int weight) {
@@ -15,18 +17,26 @@ public class Main {
 			this.to = to;
 			this.weight = weight;
 		}
+
+		@Override
+		public int compareTo(Main.Node o) {
+			return this.weight-o.weight;
+		}
 	}
 
 	public static void main(String[] args) throws IOException {
+		// TODO Auto-generated method stub
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int V = Integer.parseInt(st.nextToken());
 		int E = Integer.parseInt(st.nextToken());
-		int start = Integer.parseInt(br.readLine());
+		int K = Integer.parseInt(br.readLine());
 
-		List<Node>[] adjList = new ArrayList[V + 1]; /// 인접 리스트
+		List<Node>[] adjList = new ArrayList[V + 1]; // 각 정점으로의 최단거리
 		for (int i = 1; i < V + 1; i++)
 			adjList[i] = new ArrayList<>();
+		int[] minCost = new int[V + 1]; // 간선 비용
+		boolean[] visited = new boolean[V + 1]; // 방문 여부
 
 		while (E-- > 0) {
 			st = new StringTokenizer(br.readLine());
@@ -37,46 +47,41 @@ public class Main {
 			adjList[u].add(new Node(v, w));
 		}
 
-		boolean[] visited = new boolean[V + 1];
-		int[] minList = new int[V + 1];
-		int INF = Integer.MAX_VALUE;
-		Arrays.fill(minList, INF);
-		minList[start] = 0;
+		PriorityQueue<Node> pq = new PriorityQueue<>();
+		pq.offer(new Node(K, 0));
+		Arrays.fill(minCost, Integer.MAX_VALUE);
+		minCost[K]=0;
 
-		for (int i = 0; i < V; i++) {
-			int minCost = Integer.MAX_VALUE;
-			int stopOver = -1;
+		while (!pq.isEmpty()) {
+			Node cur = pq.poll();
 
-			// 1. 방문하지 않은 정점 중 최소 비용 정점 선택
-			for (int j = 1; j < V + 1; j++) {
-				if (visited[j])
+			if (visited[cur.to])
+				continue;
+			visited[cur.to] = true;
+
+			for (Node next : adjList[cur.to]) {
+				if (visited[next.to])
 					continue;
 
-				if (minList[j] < minCost) {
-					minCost = minList[j];
-					stopOver = j;
-				}
-			}
-
-			if (stopOver == -1) {
-				break;
-			}
-
-			visited[stopOver] = true;
-
-			// 2. 그 정점과 연결된 비방문 정점에 대해 거리 비교 후 작은 값으로 갱신
-			for (Node node : adjList[stopOver]) {
-				if (visited[node.to])
-					continue;
-
-				if (minCost + node.weight < minList[node.to]) {
-					minList[node.to] = minCost + node.weight;
+				if (minCost[next.to] > cur.weight + next.weight) {
+					minCost[next.to] = cur.weight + next.weight;
+					pq.offer(new Node(next.to, minCost[next.to]));
 				}
 			}
 		}
-
-		for (int i = 1; i < V + 1; i++) {
-			System.out.println(minList[i] == INF ? "INF" : minList[i]);
+		
+		
+		for(int i=1;i<V+1;i++) {
+			System.out.println(minCost[i]==Integer.MAX_VALUE? "INF":minCost[i]);
 		}
 	}
 }
+
+/*
+ * 다익스트라 PQ 버전
+ * 
+ * 다익스트라: 특정 정점에서 다른 모든 정점까지의 최단 거리
+ * 
+ * 1. 비방문 정점 중 최소 비용 정점 선택 2. 그 정점과 연결된 비방문 정점의 최단 거리 갱신. 기존 거리 VS 경유지 거쳐서 가는 거리
+ * 
+ */
