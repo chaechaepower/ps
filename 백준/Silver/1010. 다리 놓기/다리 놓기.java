@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -10,37 +9,26 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int testN = Integer.parseInt(br.readLine());
-		
+
 		StringTokenizer st;
-		for(int t=1;t<=testN;t++) {
-			st=new StringTokenizer(br.readLine());
-			int n=Integer.parseInt(st.nextToken());
-			int m=Integer.parseInt(st.nextToken());
-			
-			dp = new int[n+1][m+1];
-			for(int i=1;i<n+1;i++) {
-				for(int j=1;j<m+1;j++) {
-					if(i==j) {
-						dp[i][j]=1;
-					}
-					
-					if(i==1) {
-						dp[i][j]=j;
-					}
-				}
-			}
-			
-			System.out.println(recur(n,m));
-		}		
-	}
-	
-	private static int recur(int n, int m) {
-		if(dp[n][m]==0) {
-			for(int k=m-1;k>=n-1;k--) {
-				dp[n][m]+=recur(n-1,k);
-			}
+		for (int t = 1; t <= testN; t++) {
+			st = new StringTokenizer(br.readLine());
+			int n = Integer.parseInt(st.nextToken());
+			int m = Integer.parseInt(st.nextToken());
+
+			dp = new int[m + 1][n + 1];
+
+			System.out.println(recur(m, n));
 		}
+	}
+
+	private static int recur(int n, int r) {
+		if(n==r || r==0) return dp[n][r] = 1;
 		
-		return dp[n][m];
+		if (dp[n][r] == 0) {
+			dp[n][r] = recur(n - 1, r - 1) + recur(n - 1, r);
+		}
+
+		return dp[n][r];
 	}
 }
