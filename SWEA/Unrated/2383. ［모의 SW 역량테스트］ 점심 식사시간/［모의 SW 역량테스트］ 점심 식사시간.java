@@ -9,17 +9,12 @@ public class Solution {
 	
 	static final int M=1, W=2, D=3, C=4; // M:이동중, W:대기중, D:내려가는중, C:완료 
 	static class Person implements Comparable<Person>{
-		int r,c,status,arrivalTime,downCnt; // 행,열,상태,계단입구도착시간,내려간계단수
+		int r,c,arrivalTime; // 행,열,계단입구도착시간
 
 		public Person(int r, int c) {
 			super();
 			this.r = r;
 			this.c = c;
-		}
-		
-		void init() {
-			arrivalTime=downCnt=0;
-			status=M;
 		}
 
 		@Override
@@ -79,7 +74,6 @@ public class Solution {
 	
 		for (int i = 0; i < cnt; i++) {
 			Person p=pList.get(i);
-			p.init(); // 사람들의 상태를 새로운 계단 배정 위해 초기화 
 			int no=selected[i]; //사람 i에 배정된 계단
 			
 			p.arrivalTime=Math.abs(p.r-sList[no][0])+Math.abs(p.c-sList[no][1]);
@@ -96,34 +90,13 @@ public class Solution {
 	private static int processDown(ArrayList<Person> list, int height) {
 		if(list.size()==0) return 0;
 		Collections.sort(list); // 계단 도착 시간 기준 오름차순 정렬
-		int time=list.get(0).arrivalTime;
-		int size=list.size(); // 이 계단을 이용하는 사람 수 
-		int ingCnt=0, cCnt=0; // 내려가고 있는 사람 수, 완료된 사람 수 
-		
-		while(true) { //매분마다 사람들의 상태를 업데이트 
-			for(int i=0;i<size;i++) {
-				Person p=list.get(i);
-				
-				if(p.status==C) continue; // 이미 계단을 다 내려간 사람이면 패스 
-				if(p.arrivalTime==time) {
-					p.status=W;
-				}else if(p.status==W && ingCnt<3) { // 내려갈 수 있음.
-					p.status=D;
-					p.downCnt=1;
-					++ingCnt;
-				}else if(p.status==D) {
-					if(p.downCnt<height) {
-						++p.downCnt;
-					}else {
-						p.status=C;
-						--ingCnt;
-						++cCnt;
-					}
-				}
-			}
-			if(cCnt==size) break;
-			++time;
+		int size=list.size()+3;
+		int[] D=new int[size];
+		for(int i=3;i<size;i++) { //3인덱스: 계단 입구에서 가장 빨리 도착하는 사람0을 의미함. 4인덱스: 그다음 도착..
+			Person p=list.get(i-3);
+			if(D[i-3]<=p.arrivalTime+1) D[i]=p.arrivalTime+1+height;
+			else D[i]=D[i-3]+height;
 		}
-		return time;
+		return D[size-1];
 	}
 }
