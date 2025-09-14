@@ -10,11 +10,11 @@ public class Solution {
 		int testN = Integer.parseInt(br.readLine());
 
 		for (int t = 1; t <= testN; t++) {
-			StringTokenizer st=new StringTokenizer(br.readLine());
-			int n = Integer.parseInt(st.nextToken());
-			int[][] arr = new int[n][n];
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			int n=Integer.parseInt(st.nextToken());
 			
-			for (int i = 0; i < n; i++) {
+			int[][] arr=new int[n][n];
+			for(int i=0;i<n;i++) {
 				for(int j=0;j<n;j++) {
 					arr[i][j]=Integer.parseInt(st.nextToken());
 					
@@ -23,25 +23,29 @@ public class Solution {
 					}
 				}
 			}
-
+			
 			for(int k=0;k<n;k++) {
 				for(int i=0;i<n;i++) {
-					if(i==k) continue;
+					if(k==i) continue; 
+					
 					for(int j=0;j<n;j++) {
-						if(j==k) continue;
-			
-						arr[i][j]=Math.min(arr[i][k]+arr[k][j], arr[i][j]);
+						if(k==j) continue;
+						
+						arr[i][j]=Math.min(arr[i][j], arr[i][k]+arr[k][j]);
 					}
 				}
 			}
 			
 			int min=Integer.MAX_VALUE;
+			
 			for(int i=0;i<n;i++) {
 				int sum=0;
+				
 				for(int j=0;j<n;j++) {
-					sum+=arr[i][j];
+					sum+= arr[i][j]==10000 ? 0 : arr[i][j];
 				}
-				if(sum<min) min=sum;
+				
+				min=Math.min(min, sum);
 			}
 			
 			System.out.printf("#%d %d\n",t,min);
