@@ -5,47 +5,36 @@ import java.util.StringTokenizer;
 
 public class Solution {
 
-	static int n, l; // n은 재료 수, l은 제한 칼로리
-	static int[][] ingridents; // 재료 정보 (맛, 칼로리)
-	static int max;
-
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int testN = Integer.parseInt(br.readLine());
 
 		for (int t = 1; t <= testN; t++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
+			int n = Integer.parseInt(st.nextToken()); // 재료의 수
+			int l = Integer.parseInt(st.nextToken()); // 제한 칼로리
 
-			n = Integer.parseInt(st.nextToken());
-			l = Integer.parseInt(st.nextToken());
-			
-			ingridents = new int[n][2];
+			int[] grade = new int[n + 1]; // 맛
+			int[] kal = new int[n + 1]; // 칼로리
 
-			for (int i = 0; i < n; i++) {
+			for (int i = 1; i < n + 1; i++) {
 				st = new StringTokenizer(br.readLine());
-
-				ingridents[i][0] = Integer.parseInt(st.nextToken());
-				ingridents[i][1] = Integer.parseInt(st.nextToken());
+				grade[i] = Integer.parseInt(st.nextToken());
+				kal[i] = Integer.parseInt(st.nextToken());
 			}
-			
-			max = Integer.MIN_VALUE;
-			dfs(0,0,0);
-			System.out.printf("#%d %d\n",t,max);
-		}
-	}
 
-	public static void dfs(int i, int calSum, int tasteSum) {
-		if (calSum >= l) {
-			return;
-		}
+			int[][] dp = new int[n + 1][l + 1]; // dp[i][j]: 재료를 1~i번까지 고려하여 칼로리 j 이하를 만들 때 최대 점수
 
-		if (i == n) {
-			max = Math.max(max, tasteSum);
-			return;
-		}
+			for (int i = 1; i < n + 1; i++) {
+				for (int j = 1; j < l + 1; j++) {
+					if (kal[i] > j)
+						dp[i][j] = dp[i - 1][j];
+					else
+						dp[i][j] = Math.max(dp[i - 1][j - kal[i]] + grade[i], dp[i - 1][j]);
+				}
+			}
 
-		dfs(i + 1, calSum + ingridents[i][1], tasteSum + ingridents[i][0]);
-		dfs(i + 1, calSum, tasteSum);
+			System.out.printf("#%d %d\n", t, dp[n][l]);
+		}
 	}
 }
-
