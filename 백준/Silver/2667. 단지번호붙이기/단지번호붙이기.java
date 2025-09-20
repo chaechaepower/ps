@@ -1,63 +1,71 @@
-import java.util.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Main {
-
-	static int[][] danji;
+	static int n, groups, homes; // n, 단지수
+	static int[][] map;
 	static boolean[][] visited;
-	static int[] dx = { 0, 0, -1, 1 };
-	static int[] dy = { -1, 1, 0, 0 };
-	static List<Integer> result;
-	static int cnt, N;
+	static int[] dr = { -1, 1, 0, 0 };
+	static int[] dc = { 0, 0, -1, 1 };
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+		n = Integer.parseInt(br.readLine());
+		map = new int[n][n];
 
-		result = new LinkedList<>();
-		N = Integer.parseInt(br.readLine());
-		danji = new int[N][N];
-		visited = new boolean[N][N];
-		cnt = 1;
+		for (int i = 0; i < n; i++) {
+			String line = br.readLine();
 
-		for (int i = 0; i < N; i++) {
-			String str = br.readLine();
-			for (int j = 0; j < N; j++) {
-				danji[i][j] = str.charAt(j) - '0';
+			for (int j = 0; j < n; j++) {
+				map[i][j] = line.charAt(j) - '0';
 			}
 		}
 
-		for (int x = 0; x < N; x++) {
-			for (int y = 0; y < N; y++) {
-				if (danji[x][y] == 1 && !visited[x][y]) {
-					dfs(x, y);
-					result.add(cnt);
-					cnt = 1;
+		List<Integer> home = new ArrayList<>(); // 단지 내 집의 수
+		visited = new boolean[n][n];
+
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (map[i][j] == 1 && !visited[i][j]) {
+					homes=0;
+					dfs(i, j);
+					home.add(homes);
+					groups++;
 				}
 			}
 		}
 
-		Collections.sort(result);
+		Collections.sort(home);
 
-		bw.write(result.size() + "\n");
-		for (int r : result)
-			bw.write(r + "\n");
-		bw.flush();
-		bw.close();
-
+		System.out.println(groups);
+		for (int e : home) {
+			System.out.println(e);
+		}
 	}
 
-	public static void dfs(int x, int y) {
-		visited[x][y] = true;
+	private static void dfs(int r, int c) {
+		visited[r][c] = true;
+		homes++;
 
-		for (int i = 0; i < 4; i++) {
-			int nx = dx[i] + x;
-			int ny = dy[i] + y;
+		for (int d = 0; d < 4; d++) {
+			int nr = r + dr[d];
+			int nc = c + dc[d];
 
-			if (nx >= 0 && ny >= 0 && nx < N && ny < N && !visited[nx][ny] && danji[nx][ny] == 1) {
-				cnt++;
-				dfs(nx, ny);
+			if (nr < 0 || nr >= n || nc < 0 || nc >= n)
+				continue;
+
+			if (!visited[nr][nc] && map[nr][nc] == 1) {
+				dfs(nr, nc);
 			}
 		}
 	}
 }
+
+/*
+ * 연결된 그래프의 개수 - 각 그래프의 노드 수
+ * 
+ */
