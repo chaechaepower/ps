@@ -1,101 +1,102 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
-import java.util.StringTokenizer;
+import java.util.Scanner;
 
 public class Main {
-	static int n;
-	static List<Integer>[] list;
-	static int[] population;
-	static List<Integer> site1 = new ArrayList<>();
-	static List<Integer> site2 = new ArrayList<>();
-	static int min = Integer.MAX_VALUE;
+    static int N;
+    static int[] population;
+    static ArrayList<Integer>[] map;
+    static int min = Integer.MAX_VALUE;
+    static boolean[] isSelected;
+    static boolean[] isVisited;
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        N = sc.nextInt();
+        population = new int[N + 1];
+        map = new ArrayList[N + 1];
+        for(int i = 0; i <= N; i++){
+            map[i] = new ArrayList<>();
+        }
+        for(int i = 1; i <= N; i++){
+            population[i] = sc.nextInt();
+        }
+        for(int i = 1; i <= N; i++){
+            int x = sc.nextInt();
+            for(int j = 0; j < x; j++){
+                int y = sc.nextInt();
+                map[i].add(y);
+            }
+        }
+        isSelected = new boolean[N + 1];
+        func(0);
+        if(min == Integer.MAX_VALUE){
+            System.out.println(-1);
+        } else {
+            System.out.println(min);
+        }
+    }
 
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		n = Integer.parseInt(br.readLine());
+    static void addGraph(int x, int y){
+        map[x].add(y);
+        map[y].add(x);
+    }
 
-		list = new ArrayList[n + 1];
-		for (int i = 1; i < n + 1; i++) {
-			list[i] = new ArrayList<>();
-		}
 
-		population = new int[n + 1];
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		for (int i = 1; i < n + 1; i++) {
-			population[i] = Integer.parseInt(st.nextToken());
-		}
+    static void func(int cnt){
+        if(cnt == N){
+            int idx1 = -1;
+            int idx2 = -1;
+            for(int i = 1; i <= N; i++){
+                if(isSelected[i]){
+                    idx1 = i;
+                } else {
+                    idx2 = i;
+                }
+            }
+            if(idx1 == -1 || idx2 == -1) return; // 모두 한 팀으로 되었을 때 return
+            isVisited = new boolean[N + 1];
+            bfs(idx1);
+            bfs(idx2);
+            for(int i = 1; i <= N; i++){ // 방문 못한 곳이 있다 -> 연결되어 있지 않음
+                if(!isVisited[i]) return;
+            }
+            int sum1 = 0;
+            int sum2 = 0;
+            for(int i = 1; i <= N; i++){
+                if(isSelected[i]){
+                    sum1 += population[i];
+                } else {
+                    sum2 += population[i];
+                }
+            }
+            int result = Math.abs(sum1 - sum2);
+            if(result < min){
+                min = result;
+            }
+            return;
+        }
 
-		for (int i = 1; i < n + 1; i++) {
-			st = new StringTokenizer(br.readLine());
-			int cnt = Integer.parseInt(st.nextToken());
+        isSelected[cnt + 1] = true;
+        func(cnt + 1);
 
-			while (cnt-- > 0) {
-				list[i].add(Integer.parseInt(st.nextToken()));
-			}
-		}
+        isSelected[cnt + 1] = false;
+        func(cnt + 1);
+    }
 
-		comb(1, 0);
-        System.out.println(min == Integer.MAX_VALUE ? -1 : min);
-	}
-
-	public static void comb(int v, int depth) {
-		if (depth == n) {
-			if (site1.size() > 0 && site1.size() <= n / 2) {
-				site2.clear();
-				for (int i = 1; i <= n; i++) {
-					if (!site1.contains(i)) {
-						site2.add(i);
-					}
-				}
-				// 적절한 선거구인지 확인
-				if (isConnected(site1) && isConnected(site2)) {
-					int sum1 = 0, sum2 = 0;
-
-					for (int e : site1) {
-						sum1 += population[e];
-					}
-					for (int e : site2) {
-						sum2 += population[e];
-					}
-					min = Math.min(Math.abs(sum1 - sum2), min);
-				}
-			}
-			return;
-		}
-
-		site1.add(v);
-		comb(v + 1, depth + 1);
-
-		site1.remove(site1.size() - 1);
-		comb(v + 1, depth + 1);
-	}
-
-	public static boolean isConnected(List<Integer> site) {
-		if (site.size() == 1) return true;
-
-		boolean[] visited = new boolean[n + 1];
-		Queue<Integer> que = new LinkedList<>();
-		que.offer(site.get(0));
-		visited[site.get(0)] = true;
-
-		int cnt=1;
-		
-		while(!que.isEmpty()) {
-			int cur=que.poll();
-			
-			for(int nxt:list[cur]) {
-				if(!site.contains(nxt) || visited[nxt]) continue;
-				visited[nxt]=true;
-				cnt++;
-				que.offer(nxt);
-			}
-		}
-		
-		return cnt == site.size();
-	}
+    static void bfs(int start){
+        Queue<Integer> q = new LinkedList<>();
+        q.add(start);
+        isVisited[start] = true;
+        while(!q.isEmpty()){
+            int node = q.poll();
+            for(int i = 0; i < map[node].size(); i++){
+                int next = map[node].get(i);
+                if(isVisited[next]) continue;
+                if(isSelected[node] != isSelected[next]) continue;
+                isVisited[next] = true;
+                q.add(next);
+            }
+        }
+    }
 }
