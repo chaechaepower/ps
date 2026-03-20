@@ -1,22 +1,23 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.math.BigInteger;
 import java.util.*;
+import java.io.*;
 
-public class Main {
+class Main {
+    public static void main(String args[]) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-	public static void main(String[] args) throws IOException {
 
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
+        long i = Long.parseLong(st.nextToken());
 
-		long a = Long.parseLong(st.nextToken());
-		long b = Long.parseLong(st.nextToken());
-		long c = Long.parseLong(st.nextToken());
+        long i2 = Long.parseLong(st.nextToken());
+        long i3 = Long.parseLong(st.nextToken());
 
-		System.out.println(a + b + c);
 
-	}
+
+        System.out.println(i+i2+i3);
+
+    }
+
+
 
 }
