@@ -1,53 +1,55 @@
+import java.util.LinkedList;
+import java.util.Queue;
 
 class Solution {
+	static class Node {
+		String word;
+		int length;
+
+		public Node(String word, int length) {
+			this.word = word;
+			this.length = length;
+		}
+	}
+
 	boolean[] visited;
-	int min=Integer.MAX_VALUE;
 
 	public int solution(String begin, String target, String[] words) {
-		// target을 만들 수 있는지 확인
-		boolean contained = false;
+		int n = words.length;
+		visited = new boolean[n];
 
-		for (String word : words) {
-			if (target.equals(word)) {
-				contained = true;
+		Queue<Node> queue = new LinkedList<>();
+		queue.offer(new Node(begin, 0));
+
+		while (!queue.isEmpty()) {
+			Node cur = queue.poll();
+
+			// target과 같은지 확인
+			if (cur.word.equals(target)) {
+				return cur.length;
 			}
-		}
 
-		if (!contained) {
-			return 0;
-		}
-
-		visited = new boolean[words.length];
-
-		dfs(begin, target, words, 0);
-		return min;
-	}
-
-	public void dfs(String curWord, String target, String[] words, int length) {
-		if (curWord.equals(target)) {
-			min = Math.min(min, length);
-			return;
-		}
-
-		for (int i = 0; i < words.length; i++) {
-			if (visited[i]) continue;
-			
-			String candidate = words[i];
-
-			// now, candidate 비교
-			int diff = 0;
-
-			for (int j = 0; j < candidate.length(); j++) {
-				if (curWord.charAt(j) != candidate.charAt(j)) {
-					diff++;
+			for (int i = 0; i < n; i++) {
+				if (!visited[i] && isNext(cur.word, words[i])) { // 방문 x, 다음에 갈 수 있는 단어인지
+					queue.offer(new Node(words[i], cur.length + 1));
+					visited[i] = true;
 				}
 			}
+		}
+		
+		return 0;
+	}
 
-			if (diff == 1) {
-				visited[i] = true;
-				dfs(candidate, target, words, length + 1);
-				visited[i] = false;
+	private boolean isNext(String cur, String next) {
+		int diff = 0;
+
+		for (int i = 0; i < cur.length(); i++) {
+			if (cur.charAt(i) != next.charAt(i)) {
+				diff++;
 			}
 		}
+
+		return diff == 1 ? true : false;
 	}
+
 }
