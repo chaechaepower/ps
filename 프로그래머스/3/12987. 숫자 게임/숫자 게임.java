@@ -1,31 +1,20 @@
-import java.util.Collections;
-import java.util.PriorityQueue;
+import java.util.Arrays;
 
 class Solution {
-    public int solution(int[] A, int[] B) {
-    	PriorityQueue<Integer> pq1=new PriorityQueue<>(Collections.reverseOrder());
-    	PriorityQueue<Integer> pq2=new PriorityQueue<>(Collections.reverseOrder());
-    	
-    	for(int i=0;i<A.length;i++) {
-    		pq1.offer(A[i]);
-    		pq2.offer(B[i]);
-    	}
-    	
-    	int score=0;
-    	
-    	 while(!pq1.isEmpty()) {
-    		 int a=pq1.poll();    		
-    		 int b=pq2.peek();
-    		 
-    		 if(a>=b) {
-    			 continue;
-    		 }
-    		 else {
-    			 pq2.poll();
-    			 score++;
-    		 }
-    	 }
-    	 
-    	 return score;
-    }
+	public int solution(int[] A, int[] B) {
+		
+		Arrays.sort(A);
+		Arrays.sort(B);
+		
+		int score=0;
+		
+		for(int i=A.length-1, j=B.length-1; i>=0 ; i--) {
+			if(A[i]<B[j]) {
+				score++;
+				j--;
+			}
+		}
+		
+		return score;
+	}
 }
