@@ -3,15 +3,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-public class Solution {
-
+class Solution {
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int testN = Integer.parseInt(br.readLine());
 
 		for (int t = 1; t <= testN; t++) {
+			// 입력
 			StringTokenizer st = new StringTokenizer(br.readLine());
-
 			int n = Integer.parseInt(st.nextToken());
 			int m = Integer.parseInt(st.nextToken());
 
@@ -28,31 +27,25 @@ public class Solution {
 				b[i] = Integer.parseInt(st.nextToken());
 			}
 
-			int max;
-			
-			if(m>n) {
-				max=calSum(a,b,n,m);
-			}
-			else {
-				max=calSum(b,a,m,n);
-			}
+			int answer = a.length > b.length ? cal(a, b) : cal(b, a);
 
-			System.out.printf("#%d %d\n", t, max);
+			System.out.printf("#%d %d\n", t, answer);
 		}
 	}
-	
-	private static int calSum(int[]a, int[]b, int n, int m) {
-		int max=Integer.MIN_VALUE;
-		
-		for (int j = 0; j <= m - n; j++) {
-			int temp=0;
 
-			for (int i = 0; i < n; i++) {
-				temp += a[i] * b[j + i];
+	public static int cal(int[] large, int[] small) {
+		int answer = Integer.MIN_VALUE;
+		
+		for (int i = 0; i <= large.length - small.length; i++) {
+			int sum=0;
+			
+			for(int j=0;j<small.length;j++) {
+				sum+=large[i+j]*small[j];
 			}
-			max = Math.max(temp, max);
+			
+			answer=Math.max(answer, sum);
 		}
 		
-		return max;
+		return answer;
 	}
 }
