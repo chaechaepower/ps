@@ -1,25 +1,18 @@
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
 class Solution {
 
-	static class Node {
-		int v;
-		int dis;
-
-		public Node(int v, int dis) {
-			this.v = v;
-			this.dis = dis;
-		}
-	}
-
 	public int solution(int n, int[][] edge) {
 		int[] dis = new int[n + 1]; // 0은 사용 x.
+		Arrays.fill(dis, -1);
 
-		List<Integer>[] list = new LinkedList[n + 1];
+		List<Integer>[] list = new ArrayList[n + 1];
 		for (int i = 1; i < n + 1; i++) {
-			list[i] = new LinkedList<>();
+			list[i] = new ArrayList<>();
 		}
 
 		for (int[] arr : edge) {
@@ -31,25 +24,23 @@ class Solution {
 		}
 
 		int maxDis = Integer.MIN_VALUE;
-		boolean[] visited = new boolean[n + 1];
 
-		Queue<Node> queue = new LinkedList<>();
-		queue.offer(new Node(1, 0));
-		visited[1] = true;
+		Queue<Integer> queue = new LinkedList<>();
+		queue.offer(1);
+		dis[1] = 0;
 
 		while (!queue.isEmpty()) {
-			Node now = queue.poll();
+			int now = queue.poll();
 
-			for (int next : list[now.v]) {
-				if (visited[next]) {
+			for (int next : list[now]) {
+				if (dis[next] != -1) {
 					continue;
 				}
 
-				queue.offer(new Node(next, now.dis + 1));
-				visited[next] = true;
-				dis[next] = now.dis + 1;
-				
-				maxDis=Math.max(maxDis, now.dis + 1);
+				dis[next] = dis[now] + 1;
+				queue.offer(next);
+
+				maxDis = Math.max(maxDis, dis[now] + 1);
 			}
 		}
 
