@@ -3,10 +3,8 @@ import java.util.Arrays;
 import java.util.List;
 
 class Solution {
-
-	static class Node {
-		int to;
-		int weight;
+	public static class Node {
+		int to, weight;
 
 		public Node(int to, int weight) {
 			super();
@@ -16,8 +14,7 @@ class Solution {
 	}
 
 	public int solution(int N, int[][] road, int K) {
-		// 0. 인접 리스트 저장
-		List<Node>[] adj = new ArrayList[N + 1];
+		List<Node>[] adj = new ArrayList[N + 1]; // 0 사용 x
 		for (int i = 1; i < N + 1; i++) {
 			adj[i] = new ArrayList<>();
 		}
@@ -31,49 +28,41 @@ class Solution {
 			adj[v].add(new Node(u, w));
 		}
 
-		// 1.
-		int[] minList = new int[N + 1]; // 0 사용 x
-		Arrays.fill(minList, Integer.MAX_VALUE);
-		minList[1] = 0;
+		int[] minDis = new int[N + 1];
+		Arrays.fill(minDis, Integer.MAX_VALUE);
+		minDis[1] = 0;
 
 		boolean[] visited = new boolean[N + 1];
 
 		for (int i = 0; i < N; i++) {
-
-			int minCost = Integer.MAX_VALUE;
 			int stopOver = -1;
+			int minCost = Integer.MAX_VALUE;
 
 			for (int j = 1; j < N + 1; j++) {
 				if (visited[j]) {
 					continue;
 				}
 
-				if (minList[j] < minCost) {
-					minCost = minList[j];
+				if (minDis[j] < minCost) {
+					minCost = minDis[j];
 					stopOver = j;
 				}
 			}
 
-			if (stopOver == -1) {
+			if (stopOver == -1)
 				break;
-			}
 			
 			visited[stopOver] = true;
 
-			// 2.
 			for (Node next : adj[stopOver]) {
-				if (visited[next.to]) {
-					continue;
-				}
-
-				if (minCost + next.weight < minList[next.to]) {
-					minList[next.to] = minCost + next.weight;
+				if (minCost + next.weight < minDis[next.to]) {
+					minDis[next.to] = minCost + next.weight;
 				}
 			}
 		}
 
 		int answer = 0;
-		for (int min : minList) {
+		for (int min : minDis) {
 			if (min <= K) {
 				answer++;
 			}
@@ -81,10 +70,11 @@ class Solution {
 
 		return answer;
 	}
+
 }
 
 /*
- * 1. 최소 거리의 노드를 찾는다. 2. 해당 노드에서 인접한 노드들의 거리를 갱신한다. (현재 거리 vs 새로 찾은 노드를 거쳐서 갔을 때
- * 거리)
+ * 1. 인접리스트로 그래프 정보 저장 2. 1번 마을에서 다른 마을까지의 거리 배열. 1번 마을의 거리만 0으로 초기화 3. 가장 짧은
+ * 거리의 마을 선택 4. 해당 마을에서 다른 마을까지의 거리 < 기존 다른 마을 거리 비교
  * 
  */
