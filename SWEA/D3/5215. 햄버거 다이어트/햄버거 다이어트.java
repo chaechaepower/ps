@@ -3,7 +3,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-public class Solution {
+class Solution {
+	static int n, l, answer;
+	static int[] arr;
+	static int[][] ingredients;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -11,30 +14,35 @@ public class Solution {
 
 		for (int t = 1; t <= testN; t++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
-			int n = Integer.parseInt(st.nextToken()); // 재료의 수
-			int l = Integer.parseInt(st.nextToken()); // 제한 칼로리
+			n = Integer.parseInt(st.nextToken()); // 재료 수
+			l = Integer.parseInt(st.nextToken()); // 제한 칼로리
 
-			int[] grade = new int[n + 1]; // 맛
-			int[] kal = new int[n + 1]; // 칼로리
-
-			for (int i = 1; i < n + 1; i++) {
+			ingredients = new int[n][2]; // 0:맛, 1: 칼로리
+			for (int i = 0; i < n; i++) {
 				st = new StringTokenizer(br.readLine());
-				grade[i] = Integer.parseInt(st.nextToken());
-				kal[i] = Integer.parseInt(st.nextToken());
+
+				ingredients[i][0] = Integer.parseInt(st.nextToken());
+				ingredients[i][1] = Integer.parseInt(st.nextToken());
 			}
 
-			int[][] dp = new int[n + 1][l + 1]; // dp[i][j]: 재료를 1~i번까지 고려하여 칼로리 j 이하를 만들 때 최대 점수
+			answer = Integer.MIN_VALUE;
 
-			for (int i = 1; i < n + 1; i++) {
-				for (int j = 1; j < l + 1; j++) {
-					if (kal[i] > j)
-						dp[i][j] = dp[i - 1][j];
-					else
-						dp[i][j] = Math.max(dp[i - 1][j - kal[i]] + grade[i], dp[i - 1][j]);
-				}
-			}
-
-			System.out.printf("#%d %d\n", t, dp[n][l]);
+			subset(0, 0, 0);
+			System.out.printf("#%d %d\n", t, answer);
 		}
+	}
+
+	public static void subset(int idx, int kalSum, int tasteSum) {
+		if (kalSum > l) {
+			return;
+		}
+
+		if (idx == n) {
+			answer = Math.max(tasteSum, answer);
+			return;
+		}
+
+		subset(idx + 1, kalSum + ingredients[idx][1], tasteSum + ingredients[idx][0]);
+		subset(idx + 1, kalSum, tasteSum);
 	}
 }
