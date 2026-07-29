@@ -1,65 +1,34 @@
 class Solution {
-    
-    int arrLen;
-    boolean[] visited;
-    int ans=Integer.MIN_VALUE;
-    int[] idxSeq;
-    
-    public int solution(int k, int[][] dungeons) {
-        
-        arrLen=dungeons.length;
-        visited=new boolean[arrLen];
-        idxSeq=new int[arrLen];
-        
-        dfs(0, k, dungeons);
-        return ans;
-    }
-    
-    public void dfs(int depth, int k, int[][] dungeons){
-        
-        if(depth==arrLen){
-            calMaxCnt(k, dungeons);
-            return;
-        }
-        
-        for(int i=0;i<arrLen;i++){
-            if(!visited[i]){
-                visited[i]=true;
-                idxSeq[depth]=i;
-                dfs(depth+1, k, dungeons);
-                visited[i]=false;
-            }
-            
-        }
-        
-    }
-    
-    public void calMaxCnt(int k, int[][] dungeons){
-        int cnt=0;
-        
-        for(int i=0;i<arrLen;i++){
-            int idx=idxSeq[i];
-            
-            if(k>=dungeons[idx][0]){
-                k-=dungeons[idx][1];
-                cnt++;
-                
-                if(k<=0){
-                    ans=Math.max(ans,cnt);
-                    return;
-                }
-            }
-        }
-        ans=Math.max(ans,cnt);
-        
-    }
-    
+	int n;
+	int[][] arr;
+	boolean[] visited;
+	int answer;
+
+	public int solution(int k, int[][] dungeons) {
+		n = dungeons.length;
+		arr = dungeons;
+		visited = new boolean[n];
+
+		answer = 0;
+
+		perm(0, k);
+
+		return answer;
+	}
+
+	public void perm(int depth, int now) {
+		answer = Math.max(answer, depth);
+
+		for (int i = 0; i < n; i++) {
+			if (visited[i])
+				continue;
+
+			if (now < arr[i][0])
+				continue; // 현재 피로도가 최소 필요 피로도보다 작으면 스킵
+
+			visited[i] = true;
+			perm(depth + 1, now - arr[i][1]);
+			visited[i] = false;
+		}
+	}
 }
-
-/*
-k가 dungeons[i][0] 보다 크거나 같아야 가능
-k-=dungeons[i][1]
-
-
-
-*/
