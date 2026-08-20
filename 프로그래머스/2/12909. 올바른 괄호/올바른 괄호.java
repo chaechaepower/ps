@@ -1,39 +1,21 @@
-import java.util.*;
 
 class Solution {
     boolean solution(String s) {
-        boolean answer = true;
-
-        Stack<Character> stack=new Stack<>();
+        int state=0;
         
-        for(char c: s.toCharArray()){
-            if(c=='('){
-                stack.push('(');
-            }
-            
-            else{
-                if(stack.isEmpty()){
-                    return false;
-                }
-                else{
-                    stack.pop();
-                }
-            }
+        for(char ch:s.toCharArray()) {
+        	if(ch=='(') {
+        		state++;
+        	}
+        	
+        	else {
+        		state--;
+        		if(state<0) {
+        			return false;
+        		}
+        	}
         }
         
-        if(stack.size()==0){
-            answer=true;
-        }else{
-            answer=false;
-        }
-
-        return answer;
+        return state==0 ? true : false;
     }
 }
-
-/*
-(이면 넣고
-)이면 뺀다. 이때 뺼게 없으면(스택 사이즈가 0이면) 바로 false
-마지막에 스택 사이즈가 0이면 올바른 괄호 -> true
-
-*/
