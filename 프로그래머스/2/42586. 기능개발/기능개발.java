@@ -1,48 +1,51 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 class Solution {
-    public int[] solution(int[] progresses, int[] speeds) {
-        int[] days=new int[progresses.length];
-        
-        //남은 일수를 계산한다. 
-        for(int i=0;i<progresses.length;i++){
-            int progress=progresses[i];
-            int speed=speeds[i];
-            int remainder=100-progress; //남은 양 
-            
-            if(remainder%speed==0){
-                days[i]=remainder/speed;
-            }else{
-                days[i]=remainder/speed+1;
-            }
-        }
+	public int[] solution(int[] progresses, int[] speeds) {
+		int len = progresses.length;
 
-        List<Integer> list=new ArrayList<>();
-        int cnt=1;
-        int max=days[0];
-        
-        for(int i=1;i<days.length;i++){
-            if(max>=days[i]){
-                cnt++;
-            }
-            
-            else{
-                list.add(cnt);
-                max=days[i];
-                cnt=1;
-            }  
-        }
-        list.add(cnt);
-        
-        int[] answer=new int[list.size()];
-        for(int i=0;i<answer.length;i++){
-            answer[i]=list.get(i);
-        }
-        return answer;
-    }
+		int[] days = new int[len];
+
+		for (int i = 0; i < len; i++) {
+			int mod = (100 - progresses[i]) / speeds[i];
+			int rem = (100 - progresses[i]) % speeds[i];
+
+			if (rem == 0) {
+				days[i] = mod;
+			} else {
+				days[i] = mod + 1;
+			}
+		}
+
+		List<Integer> result = new ArrayList<>();
+		int count = 1;
+		int prev = days[0];
+
+		for (int i = 1; i < len; i++) {
+			if (days[i] <= prev) {
+				count++;
+			} else {
+				result.add(count);
+				count = 1;
+				prev = days[i];
+			}
+		}
+
+		if (count > 0) {
+			result.add(count);
+		}
+
+		int[] answer = new int[result.size()];
+		for (int i = 0; i < answer.length; i++) {
+			answer[i] = result.get(i);
+		}
+
+		return answer;
+	}
 }
 
 /*
-각 작업이 며칠 남았는지 days를 구한다.
-
-*/
+ * 1. 각 기능별 며칠 뒤 배포 가능한지 확인 2. 자기보다 작은거까지 세기
+ * 
+ */
