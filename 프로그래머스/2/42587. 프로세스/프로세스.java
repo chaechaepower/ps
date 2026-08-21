@@ -1,38 +1,44 @@
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 class Solution {
-    public int solution(int[] priorities, int location) {
-        PriorityQueue<Integer> pq=new PriorityQueue<>(Collections.reverseOrder());
-        
-        for(int e:priorities){
-            pq.offer(e);
-        }
-        
-        int answer=0;
-        boolean isFind=false;
-        
-        while(!isFind && !pq.isEmpty()){
-            for(int i=0;i<priorities.length;i++){
-                if(pq.peek()==priorities[i]){
-                    pq.poll();
-                    answer++;
-                    
-                    if(i==location){
-                        isFind=true;
-                        break;
-                    }
-                }
-            }
-        }
-        
-        return answer;
-    }
+	public int solution(int[] priorities, int location) {
+		List<Integer> priority = new ArrayList<>();
+		Queue<int[]> queue = new LinkedList<>();
+
+		for (int i = 0; i < priorities.length; i++) {
+			priority.add(priorities[i]);
+			queue.offer(new int[] { i, priorities[i] }); // 0: 인덱스, 1: 우선순위
+		}
+
+		Collections.sort(priority, (e1, e2) -> e2 - e1);
+		
+		int seq=0;
+
+		while (! queue.isEmpty()) {
+			int[] now=queue.peek();
+			int idx=now[0];
+			int prior=now[1];
+			
+			if(prior==priority.get(0)) { // 제일 최고 우선순위와 동일한지 
+				queue.poll();
+				priority.remove(0);
+				seq++;
+				
+				if(idx==location) {
+					return seq;
+				}
+			}
+
+			else {
+				queue.poll();
+				queue.offer(new int[] {idx, prior});
+			}
+		}
+		
+		return seq;
+	}
 }
-
-
-/*
-1. pq에 담는다.
-2. priorities 순서대로 읽으면서 현재 pq top에 있는거랑 같은지 확인
-3. 같으면 poll하고 ans++, 
-*/
