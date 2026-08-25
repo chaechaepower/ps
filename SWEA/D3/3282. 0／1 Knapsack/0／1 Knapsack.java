@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Solution {
@@ -31,30 +30,19 @@ public class Solution {
 			}
 
 			dp = new int[n + 1][k + 1]; // i번째 물건까지 확인, 최대 수용 k
-			for (int i = 1; i < n + 1; i++) {
-				Arrays.fill(dp[i], -1);
+
+			for (int i = 1; i < k + 1; i++) {
+
+				for (int j = 1; j < n + 1; j++) {
+					if (volumes[j] > i) {
+						dp[j][i] = dp[j - 1][i];
+					} else {
+						dp[j][i] = Math.max(dp[j - 1][i], dp[j - 1][i - volumes[j]] + credits[j]);
+					}
+				}
 			}
 
-			System.out.printf("#%d %d\n", t, recur(n, k));
+			System.out.printf("#%d %d\n", t, dp[n][k]);
 		}
-	}
-
-	private static int recur(int i, int k) {
-		if (i < 0) {
-			return 0;
-		}
-
-		if (dp[i][k] == -1) {
-			if (volumes[i] > k) {
-				return recur(i - 1, k);
-			}
-
-			else {
-				dp[i][k] = Math.max(recur(i - 1, k), recur(i - 1, k - volumes[i]) + credits[i]);
-			}
-
-		}
-
-		return dp[i][k];
 	}
 }
