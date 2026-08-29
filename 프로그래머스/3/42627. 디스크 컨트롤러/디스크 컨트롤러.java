@@ -1,47 +1,42 @@
-import java.util.*;
+import java.util.Arrays;
+import java.util.PriorityQueue;
 
 class Solution {
-    public int solution(int[][] jobs) {
 
-        int answer = 0;  // 전체 작업의 반환시간 합
-        int end = 0;     // 현재 시간 (직전 작업이 끝난 시점)
-        int idx = 0;     // 아직 PQ에 넣지 않은 작업의 인덱스
-        int cnt = 0;     // 처리 완료한 작업 개수
+	public static int solution(int[][] jobs) {
+		int time = 0; // 흐른 시간
+		int idx = 0; // 현재 job
+		int count = 0; // 처리한 job
+		int res = 0; // 반환 시간의 합
 
-        // 요청 시간 기준으로 정렬
-        Arrays.sort(jobs, (o1, o2) -> o1[0] - o2[0]);
+		Arrays.sort(jobs, (j1, j2) -> j1[0] - j2[0]); // 들어온 순서대로 정렬
+		PriorityQueue<Integer> pq = new PriorityQueue<>((e1, e2) -> jobs[e1][1] - jobs[e2][1]);
 
-        // 소요 시간이 짧은 작업부터 꺼냄
-        PriorityQueue<int[]> pq =
-            new PriorityQueue<>((o1, o2) -> o1[1] - o2[1]);
+		while (count < jobs.length) {
+			while (idx < jobs.length && jobs[idx][0] <= time) {
+				pq.offer(idx++);
+			}
 
-        while (cnt < jobs.length) {
+			if (pq.isEmpty()) {
+				time = jobs[idx][0];
+				continue;
+			}
 
-            // 현재 시간까지 요청된 작업을 모두 PQ에 넣음
-            while (idx < jobs.length && jobs[idx][0] <= end) {
-                pq.add(jobs[idx++]);
-            }
+			int now = pq.poll();
+			time += jobs[now][1];
+			res += time - jobs[now][0];
+			count++;
+		}
 
-            // 처리할 작업이 없다면
-            // 다음 작업의 요청 시간으로 시간 이동
-            if (pq.isEmpty()) {
-                end = jobs[idx][0];
-
-            } else {
-                // 소요 시간이 가장 짧은 작업 선택
-                int[] array = pq.poll();
-
-                // 반환시간 = 종료시간 - 요청시간
-                answer += array[1] + end - array[0];
-
-                // 작업 종료 시간 갱신
-                end += array[1];
-
-                // 처리한 작업 수 증가
-                cnt++;
-            }
-        }
-
-        return answer / jobs.length;
-    }
+		return res / jobs.length;
+	}
 }
+
+/*
+ * 대기큐에 작업을 저장했다가 하드디스크가 일을 안할 때 대기큐에서 꺼내서 실행 / 비선점
+ * 
+ * 
+ */
+
+//  [요청 시점, 소요시간]
+// 반환시간 = 현재 흐른 시각 - 요청 시각 
