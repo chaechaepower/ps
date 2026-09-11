@@ -5,9 +5,9 @@ import java.util.StringTokenizer;
 
 class Solution {
 	static int n;
-	static int[][] synergy;
-	static boolean[] result;
-	static int answer;
+	static int[][] arr;
+	static boolean[] comb;
+	static int total, answer;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -15,58 +15,56 @@ class Solution {
 
 		for (int t = 1; t <= testN; t++) {
 			n = Integer.parseInt(br.readLine());
-			synergy = new int[n][n];
+			arr = new int[n][n];
 
+			total = 0;
 			StringTokenizer st;
 
 			for (int i = 0; i < n; i++) {
 				st = new StringTokenizer(br.readLine());
 
 				for (int j = 0; j < n; j++) {
-					synergy[i][j] = Integer.parseInt(st.nextToken());
+					arr[i][j] = Integer.parseInt(st.nextToken());
+					total += arr[i][j];
 				}
 			}
 
+			comb = new boolean[n];
 			answer = Integer.MAX_VALUE;
-			result = new boolean[n];
-			comb(0, 0);
-
+			dfs(0, 0);
 			System.out.printf("#%d %d\n", t, answer);
 		}
 	}
 
-	private static void comb(int depth, int start) {
+	private static void dfs(int depth, int start) {
 		if (depth == n / 2) {
-			int diff = calSynergy();
-			answer = Math.min(answer, diff);
+
+			int s1 = 0;
+			int s2 = 0;
+
+			for (int i = 0; i < n; i++) {
+				for (int j = i+1; j < n; j++) {
+
+					if (comb[i] && comb[j]) {
+						s1 += arr[i][j] + arr[j][i];
+					}
+
+					else if (!comb[i] && !comb[j]) {
+						s2 += arr[i][j] + arr[j][i];
+					}
+				}
+			}
+
+			answer = Math.min(answer, Math.abs(s2 - s1));
 			return;
 		}
 
 		for (int i = start; i < n; i++) {
-			result[i] = true;
+			comb[i] = true;
 
-			comb(depth + 1, i + 1);
+			dfs(depth + 1, i + 1);
 
-			result[i] = false;
+			comb[i] = false;
 		}
-	}
-
-	private static int calSynergy() {
-		int aSum = 0, bSum = 0;
-
-		for (int i = 0; i < n; i++) {
-			for (int j = i + 1; j < n; j++) {
-
-				if (result[i] && result[j]) {
-					aSum += synergy[i][j] + synergy[j][i];
-				}
-
-				if (!result[i] && !result[j]) {
-					bSum += synergy[i][j] + synergy[j][i];
-				}
-			}
-		}
-
-		return Math.abs(aSum - bSum);
 	}
 }
