@@ -4,8 +4,7 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 class Solution {
-	static int[] prices;
-	static int[] plans;
+	static int[] prices, plans;
 	static int answer;
 
 	public static void main(String[] args) throws IOException {
@@ -13,15 +12,20 @@ class Solution {
 		int testN = Integer.parseInt(br.readLine());
 
 		for (int t = 1; t <= testN; t++) {
+			// 이용권 가격
 			prices = new int[4];
-			plans = new int[12];
 
 			StringTokenizer st = new StringTokenizer(br.readLine());
+
 			for (int i = 0; i < 4; i++) {
 				prices[i] = Integer.parseInt(st.nextToken());
 			}
 
+			// 이용 계획
+			plans = new int[12];
+
 			st = new StringTokenizer(br.readLine());
+
 			for (int i = 0; i < 12; i++) {
 				plans[i] = Integer.parseInt(st.nextToken());
 			}
@@ -33,26 +37,25 @@ class Solution {
 	}
 
 	private static void dfs(int month, int total) {
-		if (month == 12) {
+		if (total >= answer) {
+			return;
+		}
+
+		if (month >= 12) {
 			answer = Math.min(total, answer);
 			return;
 		}
 
-		// 1일권
-		if (month + 1 <= 12) {
-			dfs(month + 1, total + prices[0] * plans[month]);
-		}
-		// 1달권
-		if (month + 1 <= 12) {
-			dfs(month + 1, total + prices[1]);
-		}
-		// 3달권
-		if (month + 3 <= 12) {
-			dfs(month + 3, total + prices[2]);
-		}
-		// 1년권
-		if (month <= 12) {
-			dfs(12, total + prices[3]);
-		}
+		// 1일권 선택
+		dfs(month + 1, total + prices[0]*plans[month]);
+
+		// 1달권 선택
+		dfs(month + 1, total + prices[1]);
+
+		// 3달권 선택
+		dfs(month + 3, total + prices[2]);
+
+		// 1년권 선택
+		dfs(month + 12, total + prices[3]);
 	}
 }
