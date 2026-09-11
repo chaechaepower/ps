@@ -5,10 +5,9 @@ import java.util.StringTokenizer;
 
 class Solution {
 	static char[] op = { '+', '-', '*', '/' };
-	static char[] opArr, result;
+	static int[] ops;
 	static int[] nums;
 	static int n;
-	static boolean[] visited;
 	static int min, max;
 
 	public static void main(String[] args) throws IOException {
@@ -17,19 +16,13 @@ class Solution {
 
 		for (int t = 1; t <= testN; t++) {
 			n = Integer.parseInt(br.readLine());
-
+			ops=new int[4];
+			
 			StringTokenizer st = new StringTokenizer(br.readLine());
-			StringBuilder sb = new StringBuilder();
-
+			
 			for (int i = 0; i < 4; i++) {
-				int cnt = Integer.parseInt(st.nextToken());
-
-				for (int j = 0; j < cnt; j++) {
-					sb.append(op[i]);
-				}
+				ops[i]=Integer.parseInt(st.nextToken());
 			}
-
-			opArr = sb.toString().toCharArray();
 
 			nums = new int[n];
 			st = new StringTokenizer(br.readLine());
@@ -40,8 +33,7 @@ class Solution {
 
 			min = Integer.MAX_VALUE;
 			max = Integer.MIN_VALUE;
-			visited = new boolean[n - 1];
-			result = new char[n - 1];
+
 			dfs(0, nums[0]);
 
 			System.out.printf("#%d %d\n", t, max - min);
@@ -56,22 +48,21 @@ class Solution {
 			return;
 		}
 
-		for (int i = 0; i < n - 1; i++) {
-			if (!visited[i]) {
-				visited[i] = true;
-				result[depth] = opArr[i];
-				int cal = calculate(now, depth);
-
-				dfs(depth + 1, cal);
-
-				visited[i] = false;
+		for (int i = 0; i < 4; i++) {
+			if(ops[i]==0) {
+				continue;
 			}
+			
+			ops[i]--;
+			
+			dfs(depth+1, calculate(now, depth, op[i]));
+			
+			ops[i]++;
 		}
 	}
 
-	private static int calculate(int now, int idx) {
-
-		switch (result[idx]) {
+	private static int calculate(int now, int idx, char ch) {
+		switch (ch) {
 		
 		case '+':
 			now = now + nums[idx+1];
