@@ -4,46 +4,63 @@ import java.util.Map;
 import java.util.Set;
 
 class Solution {
-	public int[] solution(String[] gems) {
-		// gem 종류 개수 
-    	Set<String> set=new HashSet<>();
-    	
-    	for(String gem:gems) {
-    		set.add(gem);
-    	}
-    	
-    	int totalKind=set.size();
-    	
-    	// 윈도우에 포함된 보석 개수 
-    	Map<String, Integer> map=new HashMap<>();
-    	
-    	int left=0, answerLeft=0, answerRight=0;
-    	int minLen=Integer.MAX_VALUE;
-    	
-    	for(int right=0; right<gems.length;right++) {
-    		// 보석 추가 
-    		map.put(gems[right], map.getOrDefault(gems[right], 0)+1);
-    		
-    		while(map.size()==totalKind) { // 현재 윈도우가 모든 종류를 포함 
-    			// 현재 구간이 짧으면 답 갱신 
-    			if(right-left<minLen) {
-    				minLen = right - left;
-        		    answerLeft = left;
-        		    answerRight = right;
-    			}
-    			
-    			// left 보석 개수 1 감소 
-    			map.put(gems[left], map.get(gems[left])-1);
-    			
-    			// 개수가 0이면 map에서 제거 
-    			if(map.get(gems[left])==0) {
-    				map.remove(gems[left]);
-    			}
-    			
-    			left++;
-    		}
-    	}
-    	
-    	return new int[] {answerLeft + 1, answerRight + 1};
+	public static void main(String[] args) {
+		String[] str = { "DIA", "RUBY", "RUBY", "DIA", "DIA", "EMERALD", "SAPPHIRE", "DIA"};
+		int[] result = solution(str);
+
+		for (int e : result) {
+			System.out.println(e);
+		}
+	}
+
+	public static int[] solution(String[] gems) {
+		Set<String> orig = new HashSet<>();
+		for (String gem : gems) {
+			orig.add(gem);
+		}
+
+		Map<String, Integer> map = new HashMap<>();
+
+		int left = 0, right = -1;
+		int aLeft = -1, aRight = -1, len = Integer.MAX_VALUE;
+
+		while (right < gems.length) {
+			int size = map.keySet().size();
+
+			if (size == orig.size()) {
+
+				if (right - left + 1 < len) {
+					aLeft = left;
+					aRight = right;
+					len = right - left + 1;
+				}
+
+				// left에 해당하는 보석 제거, left++
+				String gem=gems[left];
+				
+				map.put(gem, map.get(gem) - 1);
+				
+				if(map.get(gem)==0) {
+					map.remove(gem);
+				}
+				
+				left++;
+			}
+
+			else if (size < orig.size()) {				
+				if (++right < gems.length) {
+					map.put(gems[right], map.getOrDefault(gems[right], 0) + 1);
+				}
+			}
+		}
+
+		return new int[] { aLeft+1, aRight+1 };
 	}
 }
+
+/*
+ * 1번 진열대부터 시작
+ * 
+ * 종류를 다 센다 투 포인터로 종류만큼 있는지 확인
+ * 
+ */
