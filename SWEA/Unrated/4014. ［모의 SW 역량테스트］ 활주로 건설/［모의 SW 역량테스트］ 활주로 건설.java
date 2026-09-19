@@ -1,136 +1,136 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
-
 import java.util.StringTokenizer;
 
 class Solution {
-	static int x;
-
-	public static void main(String args[]) throws Exception {
+	static int[][] map;
+	static int n,x;
+	
+	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int testN = Integer.parseInt(br.readLine());
 
 		for (int t = 1; t <= testN; t++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
+			n = Integer.parseInt(st.nextToken());
+			x = Integer.parseInt(st.nextToken());
 
-			int n = Integer.parseInt(st.nextToken()); // 한 변 크기
-			x = Integer.parseInt(st.nextToken()); // 경사로 길이
+			map = new int[n][n];
 
-			// 지형 정보 저장
-			int[][] board = new int[n][n];
 			for (int i = 0; i < n; i++) {
 				st = new StringTokenizer(br.readLine());
+
 				for (int j = 0; j < n; j++) {
-					board[i][j] = Integer.parseInt(st.nextToken());
+					map[i][j] = Integer.parseInt(st.nextToken());
 				}
 			}
 
-			int answer = 0;
-			// 가로
+			int count = 0;
+
+			// 행
 			for (int i = 0; i < n; i++) {
 				int[] arr = new int[n];
 
 				for (int j = 0; j < n; j++) {
-					arr[j] = board[i][j];
+					arr[j] = map[i][j];
 				}
 
-				if (check(arr))
-					answer++;
+				if (check(arr)) {
+					count++;
+				}
 			}
 
-			// 세로
-			for (int j = 0; j < n; j++) {
+			// 열
+			for (int i = 0; i < n; i++) {
 				int[] arr = new int[n];
 
-				for (int i = 0; i < n; i++) {
-					arr[i] = board[i][j];
+				for (int j = 0; j < n; j++) {
+					arr[j] = map[j][i];
 				}
 
-				if (check(arr))
-					answer++;
+				if (check(arr)) {
+					count++;
+				}
 			}
-
-			System.out.printf("#%d %d\n", t, answer);
+			
+			System.out.println("#" + t + " " + count);
 		}
 	}
 
-	private static boolean check(int[] line) {
-		int i = 0;
-		int prev = line[i++];
-		boolean[] used = new boolean[line.length];
+	private static boolean check(int[] arr) {
+		boolean[] installed = new boolean[n];
 
-		while (i < line.length) {
-			int now = line[i];
+		for(int i=0;i<n-1;i++) {
+			int prev=arr[i];
+			int now=arr[i+1];
 
-			if (prev == now) {
-				i++;
+			// 같다
+			if(prev==now) {
 				continue;
 			}
 			
-		    if (Math.abs(prev - now) > 1) {
-		        return false;
-		    }
-
-			// 올라가는 경우
-			if (prev < now) {
-				int count = 0;
-
-				for (int j = i - 1; j >= 0; j--) {
-
-					// 낮은 쪽은 prev와 같은 높이여야 함
-					if (prev != line[j] || used[j]) {
+			// 높이 차이가 2이상
+			int diff=Math.abs(now-prev);
+			
+			if(diff>=2) {
+				return false;
+			}
+			
+			// 현재 = 이전 +1 (증가)  
+			if(now == prev+1) {
+				
+				// 이전에 prev랑 같은 높이가 x칸만큼 있는지 
+				for(int j=i;j>=i+1-x;j--) {
+					// j 범위 초가 
+					if(j<0) {
 						return false;
 					}
-
-					count++;
-					used[j] = true;
-
-					if (count == x) {
-						break;
-					}
-				}
-
-				if (count < x) {
-					return false;
-				}
-			}
-
-			// 내려가는 경우
-			if (prev > now) {
-				int count = 0;
-
-				for (int j = i; j < line.length; j++) {
-
-					// 낮은 쪽은 now와 같은 높이여야 함
-					if (now != line[j] || used[j]) {
+					
+					// prev랑 높이가 다름
+					if(arr[j]!=prev || installed[j]) {
 						return false;
 					}
-
-					count++;
-					used[j] = true;
-
-					if (count == x) {
-						break;
-					}
+					
+					installed[j]=true;
 				}
-
-				if (count < x) {
-					return false;
-				}
-
-				// 경사로로 사용한 X칸은 건너뜀
-				i += x - 1;
+				
 			}
-
-			prev = now;
-			i++;
+			
+			// 현재 = 이전 -1 (감소) 
+			if(now == prev-1) {
+				
+				// 이후 now랑 같은 높이가 x칸만큼 있는지 
+				for(int j=i+1;j<i+1+x;j++) {
+					// j 범위 초가 
+					if(j>=n) {
+						return false;
+					}
+					
+					// prev랑 높이가 다름
+					if(arr[j]!=now || installed[j]) {
+						return false;
+					}
+					
+					installed[j]=true;
+				}
+			}
 		}
-
+		
 		return true;
 	}
 }
 
 /*
- * 1. 증감지점 찾기 2. 작은쪽이 활주로 길이만큼 존재하는지 파악
  * 
+ * 같다 -> 계속 진행
+ * 
+ * 높이 차이가 2이상 -> false c
+ * 
+ * 현재 = 다음이 +1 -> 지금까지 지나온 낮은 평지 X칸 검사
+ * 
+ * 현재 = 다음이 -1 -> 앞으로 나올 낮은 평지 X칸 검사
+ * 
+ * 
+ 
  */
