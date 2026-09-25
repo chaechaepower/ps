@@ -1,34 +1,42 @@
+import java.io.IOException;
+
 class Solution {
-	int n;
-	int[][] arr;
-	boolean[] visited;
-	int answer;
 
-	public int solution(int k, int[][] dungeons) {
-		n = dungeons.length;
-		arr = dungeons;
-		visited = new boolean[n];
+	static int[][] dungeons;
+	static boolean[] visited;
+	static int len;
+	static int ans;
 
-		answer = 0;
+	public static void main(String[] args) throws IOException {
 
-		perm(0, k);
-
-		return answer;
 	}
 
-	public void perm(int depth, int now) {
-		answer = Math.max(answer, depth);
+	public static int solution(int k, int[][] dungeons) {
+		Solution.dungeons = dungeons;
+		len = dungeons.length;
+		visited = new boolean[len];
 
-		for (int i = 0; i < n; i++) {
-			if (visited[i])
-				continue;
+		dfs(0, k);
+		return ans;
+	}
 
-			if (now < arr[i][0])
-				continue; // 현재 피로도가 최소 필요 피로도보다 작으면 스킵
+	private static void dfs(int depth, int now) {
 
-			visited[i] = true;
-			perm(depth + 1, now - arr[i][1]);
-			visited[i] = false;
+		ans = Math.max(ans, depth);
+
+		for (int i = 0; i < len; i++) {
+			if (!visited[i]) {
+				if (now >= dungeons[i][0]) {
+					visited[i] = true;
+					dfs(depth + 1, now - dungeons[i][1]);
+					visited[i] = false;
+				}
+			}
 		}
 	}
 }
+
+/*
+ * dfs 순열
+ * 
+ */
