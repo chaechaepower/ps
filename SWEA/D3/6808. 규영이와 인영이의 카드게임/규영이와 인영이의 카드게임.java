@@ -1,12 +1,14 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 class Solution {
-	static int[] in, gyo, result;
-	static boolean[] visited;
-	static int answer;
+	static List<Integer> gyo, in;
+	static boolean visited[];
+	static int win, lose;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -15,78 +17,76 @@ class Solution {
 		for (int t = 1; t <= testN; t++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
 
-			// 규영 카드 초기화
-			gyo = new int[9];
-			boolean[] check = new boolean[19]; // 1~18
-
+			gyo = new ArrayList<>();
 			for (int i = 0; i < 9; i++) {
-				int num = Integer.parseInt(st.nextToken());
-				gyo[i] = num;
-				check[num] = true;
+				gyo.add(Integer.parseInt(st.nextToken()));
 			}
 
-			// 인영 카드 초기화
-			in = new int[9];
-			for (int i = 1, idx = 0; i <= 18; i++) {
-				if (check[i])
-					continue;
-
-				in[idx++] = i;
+			in = new ArrayList<>();
+			for (int i = 1; i <= 18; i++) {
+				if (!gyo.contains(i)) {
+					in.add(i);
+				}
 			}
 
+			win=0;
+			lose=0;
 			visited = new boolean[9];
-			result=new int[9];
-			
-			answer=0;
-			perm(0);
-			System.out.printf("#%d %d %d\n", t, answer, per(9)-answer);
-		}
+			perm(0, 0, 0);
 
+			System.out.printf("#%d %d %d\n", t, win, lose);
+		}
 	}
 
-	public static void perm(int depth) {
+	private static void perm(int inSum, int gyoSum, int depth) {
 		if (depth == 9) {
-			if (isGyoWin())
-				answer++;
+			if (gyoSum > inSum) {
+				win++;
+			}
+			
+			else if(gyoSum < inSum) {
+				lose++;
+			}
+			
 			return;
 		}
 
 		for (int i = 0; i < 9; i++) {
-			if (visited[i])
+			if (visited[i]) {
 				continue;
+			}
 
 			visited[i] = true;
-			result[depth] = in[i];
 
-			perm(depth + 1);
+			// 게임
+			int gyoNow = gyo.get(depth);
+			int inNow = in.get(i);
 
+			if (gyoNow > inNow) {
+				perm(inSum, gyoSum+ (gyoNow + inNow), depth+1);
+			} else {
+				perm(inSum +(gyoNow + inNow), gyoSum, depth+1);
+			}
+			
 			visited[i] = false;
 		}
-	}
-
-	public static boolean isGyoWin() {
-		int inSum = 0, gyoSum = 0;
-
-		for (int i = 0; i < 9; i++) {
-			if (gyo[i] > result[i]) {
-				gyoSum += gyo[i] + result[i];
-			} else {
-				inSum += gyo[i] + result[i];
-			}
-		}
-
-		return gyoSum > inSum;
-	}
-
-	public static int per(int n) {
-		if (n == 1)
-			return 1;
-
-		return n * per(n - 1);
 	}
 }
 
 /*
- * 모든 순열을 구한다. 각 경우마다 계산한다
+ * 규영이가 낸 카드 규영이가 이기는 경우/지는 경우
  * 
+ * 높은 수 -> 합 낮은 수 -> 점수 x
+ * 
+ * 순서를 정한다. 게임 시작 이긴 경우에 win++
+ 
+4
+1 3 5 7 9 11 13 15 17
+18 16 14 12 10 8 6 4 2
+13 17 9 5 18 7 11 1 15
+1 6 7 9 12 13 15 17 18
+ 
  */
+
+
+
