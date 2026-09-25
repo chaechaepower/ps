@@ -6,8 +6,8 @@ import java.util.StringTokenizer;
 class Solution {
 	static int n;
 	static int[][] arr;
-	static boolean[] comb;
-	static int total, answer;
+	static boolean[] group;
+	static int min;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -17,54 +17,56 @@ class Solution {
 			n = Integer.parseInt(br.readLine());
 			arr = new int[n][n];
 
-			total = 0;
 			StringTokenizer st;
-
 			for (int i = 0; i < n; i++) {
 				st = new StringTokenizer(br.readLine());
 
 				for (int j = 0; j < n; j++) {
 					arr[i][j] = Integer.parseInt(st.nextToken());
-					total += arr[i][j];
 				}
 			}
 
-			comb = new boolean[n];
-			answer = Integer.MAX_VALUE;
-			dfs(0, 0);
-			System.out.printf("#%d %d\n", t, answer);
+			group = new boolean[n];
+			min = Integer.MAX_VALUE;
+			comb(0, 0);
+			System.out.printf("#%d %d\n", t, min);
 		}
 	}
 
-	private static void dfs(int depth, int start) {
-		if (depth == n / 2) {
+	private static void comb(int start, int cnt) {
+		if (cnt == n / 2) {
+			// 시너지 계산
+			int aSum = 0, bSum = 0;
 
-			int s1 = 0;
-			int s2 = 0;
+			for (int i = 0; i < n - 1; i++) {
+				for (int j = i + 1; j < n; j++) {
 
-			for (int i = 0; i < n; i++) {
-				for (int j = i+1; j < n; j++) {
-
-					if (comb[i] && comb[j]) {
-						s1 += arr[i][j] + arr[j][i];
-					}
-
-					else if (!comb[i] && !comb[j]) {
-						s2 += arr[i][j] + arr[j][i];
+					if (group[i] && group[j]) {
+						aSum += arr[i][j] + arr[j][i];
+					} 
+					else if (!group[i] && !group[j]) {
+						bSum += arr[i][j] + arr[j][i];
 					}
 				}
 			}
 
-			answer = Math.min(answer, Math.abs(s2 - s1));
+			min = Math.min(min, Math.abs(aSum - bSum));
+
 			return;
 		}
 
 		for (int i = start; i < n; i++) {
-			comb[i] = true;
-
-			dfs(depth + 1, i + 1);
-
-			comb[i] = false;
+			group[i] = true;
+			comb(i + 1, cnt + 1);
+			group[i] = false;
 		}
 	}
 }
+
+/*
+ * 
+ * a음식, b음식의 조합
+ * 
+ * 시너지의 합을 구하고 차이가 가장 작도록
+ * 
+ */
