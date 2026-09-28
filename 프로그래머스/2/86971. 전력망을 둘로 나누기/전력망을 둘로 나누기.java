@@ -1,54 +1,85 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 class Solution {
-	List<Integer>[] graph;
-	boolean[] visited;
-	int count;
-	int answer = Integer.MAX_VALUE;
+	static List<Integer>[] list;
+	static int ans;
+	static boolean[] visited;
 
-	public int solution(int n, int[][] wires) {
+	public static void main(String[] args) throws IOException {
+		int[][] wires = {
+			    {1, 3},
+			    {2, 3},
+			    {3, 4},
+			    {4, 5},
+			    {4, 6},
+			    {4, 7},
+			    {7, 8},
+			    {7, 9}
+			};
+		
+		int answer=solution(9,wires);
+		System.out.println(answer);
+	}
 
-		graph = new ArrayList[n + 1];
-		for (int j = 1; j < n + 1; j++) {
-			graph[j] = new ArrayList<>();
-		}
-
-		for (int j = 0; j < wires.length; j++) {
-			int u = wires[j][0];
-			int v = wires[j][1];
-
-			graph[u].add(v);
-			graph[v].add(u);
+	public static int solution(int n, int[][] wires) {
+		list = new ArrayList[n + 1];
+		for (int i = 1; i < n + 1; i++) {
+			list[i] = new ArrayList<>();
 		}
 
 		for (int i = 0; i < wires.length; i++) {
-			int u = wires[i][0]; // 제외
+			int u = wires[i][0];
 			int v = wires[i][1];
-
-			visited = new boolean[n + 1];
-
-			count = 0;
-			dfs(1, u, v);
-			answer = Math.min(answer, Math.abs(count - (n - count)));
+			list[u].add(v);
+			list[v].add(u);
 		}
-
-		return answer;
+		
+		// 간선 하나씩 제거	
+		ans=Integer.MAX_VALUE;
+		
+		for(int[] wire:wires) {
+			int u=wire[0];
+			int v=wire[1];
+			
+			list[u].remove(Integer.valueOf(v));
+			list[v].remove(Integer.valueOf(u));
+			
+			visited = new boolean[n + 1];
+			int a=dfs(u);
+			int diff = Math.abs(a - (n-a));
+			
+			ans = Math.min(diff, ans);
+			
+			list[u].add(v);
+			list[v].add(u);
+		}
+		
+		return ans;
 	}
 
-	public void dfs(int now, int u, int v) {
-		visited[now] = true;
-		count++;
+	private static int dfs(int v) {
+		visited[v] = true;
 
-		for (int next : graph[now]) {
-			if (visited[next])
+		int total = 1;
+
+		for (int e : list[v]) {
+			if (visited[e])
 				continue;
 			
-			if((now==u && next==v) || (now==v && next==u)) {
-				continue;
-			}
-
-			dfs(next, u, v);
+			total += dfs(e);
 		}
+
+		return total;
 	}
 }
+
+/*
+ * 
+ * 
+ * 간선 하나씩 끊고 각 그룹 송전탑 개수 구함
+ * 
+ * 
+ * 
+ */
