@@ -8,9 +8,6 @@ import java.util.Queue;
 import java.util.StringTokenizer;
 
 class Solution {
-	static List<Integer>[] graph;
-	static boolean[] visited;
-	static int maxDepth, maxNum;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -18,46 +15,44 @@ class Solution {
 		for (int t = 1; t <= 10; t++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
 
-			int len = Integer.parseInt(st.nextToken());
+			int n = Integer.parseInt(st.nextToken());
 			int start = Integer.parseInt(st.nextToken());
 
-			graph = new ArrayList[101];
-			for (int i = 1; i < 101; i++) {
-				graph[i] = new ArrayList<>();
+			List<Integer>[] list = new ArrayList[101];
+
+			for (int i = 1; i <= 100; i++) {
+				list[i] = new ArrayList<>();
 			}
 
 			st = new StringTokenizer(br.readLine());
-			for (int i = 0; i < len / 2; i++) {
+
+			for (int i = 0; i < n / 2; i++) {
 				int from = Integer.parseInt(st.nextToken());
 				int to = Integer.parseInt(st.nextToken());
-
-				graph[from].add(to);
+				list[from].add(to);
 			}
 
+			boolean[] visited = new boolean[101];
 			Queue<int[]> queue = new LinkedList<>();
 			queue.offer(new int[] { start, 0 });
-
-			visited = new boolean[101];
 			visited[start] = true;
-
-			maxDepth = 0;
-			maxNum = Integer.MIN_VALUE;
+			int maxDepth = 0, maxNum = 0;
 
 			while (!queue.isEmpty()) {
-				int[] arr = queue.poll();
-				int now = arr[0];
-				int depth = arr[1];
+				int[] now = queue.poll();
+				int v = now[0];
+				int depth = now[1];
 
-				if (depth > maxDepth) {
-					maxDepth = depth;
-					maxNum = now;
-				} else if (depth == maxDepth) {
-					maxNum = Math.max(maxNum, now);
-				}
-
-				for (int next : graph[now]) {
+				for (int next : list[v]) {
 					if (visited[next])
 						continue;
+
+					if (depth + 1 > maxDepth) {
+						maxDepth = depth + 1;
+						maxNum = next;
+					} else if (depth + 1 == maxDepth) {
+						maxNum = Math.max(maxNum, next);
+					}
 
 					visited[next] = true;
 					queue.offer(new int[] { next, depth + 1 });
@@ -66,5 +61,14 @@ class Solution {
 
 			System.out.printf("#%d %d\n", t, maxNum);
 		}
+
 	}
 }
+
+/*
+ * 
+ * 
+ * 
+ * 
+ * 
+ */
