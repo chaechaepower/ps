@@ -1,64 +1,65 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.io.*;
+import java.math.*;
 
 class Solution {
-    
-    	static class Music{
-		public int idx;
-		public int plays;
-		
-		public Music(int idx, int plays) {
-			this.idx = idx;
-			this.plays = plays;
-		}
-	}
-    
-		public int[] solution(String[] genres, int[] plays) {
-		Map<String, List<Music>> map=new HashMap<>();
-		Map<String, Integer> total=new HashMap<>();
-		
-		for(int i=0;i<genres.length;i++) {
-			Music music=new Music(i, plays[i]);
-			map.computeIfAbsent(genres[i], k->new ArrayList<>()).add(music);
-			
-			total.put(genres[i], total.getOrDefault(genres[i], 0)+plays[i]);
-		}
-		
-		// 1. 총 재생수 기준 장르 내림차순  
-		List<String> musics=new ArrayList<>(total.keySet());
-		Collections.sort(musics,(s1,s2)-> total.get(s2)-total.get(s1));
-		
-		// 2. 가장 많이 재생된 장르중 가장 많이 재생된 노래 선택 (같으면 고유 번호 낮을거 선택)
-		List<Integer> result=new ArrayList<>();
-		
-		for(String music:musics) {
-			List<Music> list=map.get(music);
-			
-			if(list.size()==1) {
-				result.add(list.get(0).idx);
-				continue;
-			}
-			
-			Collections.sort(list,(m1,m2)->{
-				if(m1.plays==m2.plays) {
-					return m1.idx-m2.idx;
-				}
-				
-				return m2.plays-m1.plays;
-			});
-			
-			result.add(list.get(0).idx);
-			result.add(list.get(1).idx);
-		}
-		
-		int[] answer=new int[result.size()];
-		for(int i=0;i<result.size();i++) {
-			answer[i]=result.get(i);
-		}
-		
-		return answer;
+  	public int[] solution(String[] genres, int[] plays) {
+        List<Integer> idxs = new ArrayList<>(); // 각 노래의 고유번호
+        
+        Map<String, Integer> totalCount=new HashMap<>();
+        
+        for(int i=0;i<genres.length;i++){
+            String genre = genres[i];
+            int play = plays[i];
+            
+            totalCount.put(genre, totalCount.getOrDefault(genre,0)+play);
+            idxs.add(i);
+        }
+        
+        Collections.sort(idxs, (i1,i2)->{
+            String i1Genre=genres[i1];
+            String i2Genre=genres[i2];
+            
+            if(totalCount.get(i1Genre) != totalCount.get(i2Genre)){
+                return totalCount.get(i2Genre) - totalCount.get(i1Genre);
+            }
+            
+            if(plays[i1] != plays[i2]){
+                return plays[i2] - plays[i1] ;
+            }
+            
+            return i1-i2;
+        });
+        
+        List<Integer> result = new ArrayList<>();
+        Map<String, Integer> count = new HashMap<>();
+        
+        for(int i=0;i<idxs.size();i++){
+            int idx = idxs.get(i);
+            Integer now = count.get(genres[idx]);
+            
+            if(now != null && now ==2){
+                continue;
+            }{
+                result.add(idx);
+                count.put(genres[idx], count.getOrDefault(genres[idx],0)+1);
+            }
+            
+        }
+        
+        return result.stream()
+                .mapToInt(a->a)
+                .toArray();
     }
 }
+
+
+/*
+
+정렬 조건
+1. 각 장르별 총 재생횟수 높은 순 -> Map k:장르, v:총 재생횟수
+2. 1같으면 노래별 재생횟수 높은 순 
+3. 2같으면 고유번호 낮은 순
+
+
+*/
