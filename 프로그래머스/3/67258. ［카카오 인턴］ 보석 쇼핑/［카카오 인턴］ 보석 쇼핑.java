@@ -1,66 +1,61 @@
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 class Solution {
-	public static void main(String[] args) {
-		String[] str = { "DIA", "RUBY", "RUBY", "DIA", "DIA", "EMERALD", "SAPPHIRE", "DIA"};
-		int[] result = solution(str);
-
-		for (int e : result) {
-			System.out.println(e);
-		}
-	}
 
 	public static int[] solution(String[] gems) {
-		Set<String> orig = new HashSet<>();
-		for (String gem : gems) {
-			orig.add(gem);
-		}
-
-		Map<String, Integer> map = new HashMap<>();
-
-		int left = 0, right = -1;
-		int aLeft = -1, aRight = -1, len = Integer.MAX_VALUE;
-
-		while (right < gems.length) {
-			int size = map.keySet().size();
-
-			if (size == orig.size()) {
-
-				if (right - left + 1 < len) {
-					aLeft = left;
-					aRight = right;
-					len = right - left + 1;
-				}
-
-				// left에 해당하는 보석 제거, left++
-				String gem=gems[left];
-				
-				map.put(gem, map.get(gem) - 1);
-				
-				if(map.get(gem)==0) {
-					map.remove(gem);
-				}
-				
-				left++;
-			}
-
-			else if (size < orig.size()) {				
-				if (++right < gems.length) {
-					map.put(gems[right], map.getOrDefault(gems[right], 0) + 1);
-				}
-			}
-		}
-
-		return new int[] { aLeft+1, aRight+1 };
+	    Set<String> set = new HashSet<>();
+        for(String gem:gems){
+            set.add(gem);
+        }
+        
+        int size = set.size();
+        
+        Map<String, Integer> map = new HashMap<>();
+        int lo=0, hi=-1;
+        int total=0, len=Integer.MAX_VALUE;
+        
+        int[] answer = new int[2];
+        
+        while(hi<gems.length){
+            if(total<size && ++hi<gems.length){
+                String gem = gems[hi];
+                
+                if(!map.containsKey(gem)){
+                    total++;
+                }
+                
+                map.put(gem,map.getOrDefault(gem,0)+1);
+            }
+            
+            else if(total == size){
+                int nowLen = hi-lo+1;
+                
+                if(nowLen<len){
+                    len=nowLen;
+                    answer[0]=lo+1;
+                    answer[1]=hi+1;
+                }
+                
+                String gem = gems[lo++];
+                
+                if(map.get(gem)==1){
+                    map.remove(gem);
+                    total--;
+                }else{
+                    map.put(gem,map.get(gem)-1);
+                }
+            }
+        }
+        
+        return answer;
+        
 	}
 }
 
 /*
- * 1번 진열대부터 시작
- * 
- * 종류를 다 센다 투 포인터로 종류만큼 있는지 확인
- * 
- */
+1. 보석 종류 저장
+2. 투포인터
+    덜 포함 -> hi 늘림
+    다 포함 -> lo 늘림
+
+*/
