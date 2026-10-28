@@ -1,47 +1,39 @@
-import java.util.Collections;
-import java.util.PriorityQueue;
+import java.util.*;
 
 class Solution {
 
 	public int[] solution(String[] operations) {
-		PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Collections.reverseOrder());
-		PriorityQueue<Integer> minHeap = new PriorityQueue<>();
-
-		for (String str : operations) {
-			String[] arr=str.split(" ");
-			String op=arr[0];
-			int data=Integer.parseInt(arr[1]);
-			
-			if(op.equals("I")) {
-				maxHeap.offer(data);
-				minHeap.offer(data);
-			}
-			
-			else if(op.equals("D") && !maxHeap.isEmpty()) {
-				
-				if(data==1) {
-					int max=maxHeap.poll();
-					minHeap.remove(max);
-				}
-				
-				else { // data ==-1
-					int min=minHeap.poll();
-					maxHeap.remove(min);
-				}
-			}
-		}
+		PriorityQueue<Integer> minHeap=new PriorityQueue<>();
+        PriorityQueue<Integer> maxHeap=new PriorityQueue<>(Collections.reverseOrder());
 		
-		int[] answer = {};
-
-		
-		if(maxHeap.isEmpty()) {
-			answer= new int[] {0,0};
-		}
-		else {
-			answer= new int[] {maxHeap.peek(), minHeap.peek()};
-		}
-
-		return answer;
-		
+        for(String operation:operations){
+            switch(operation){
+                case "D 1":
+                    if(!maxHeap.isEmpty()){
+                        int max= maxHeap.poll();
+                        minHeap.remove(max);
+                    }
+                    break;
+                    
+                case "D -1":
+                    if(!minHeap.isEmpty()){
+                        int min= minHeap.poll();
+                        maxHeap.remove(min);
+                    }
+                    break;
+                    
+                default: 
+                    int num=Integer.parseInt(operation.split(" ")[1]);
+                    minHeap.offer(num);
+                    maxHeap.offer(num);
+            }
+        }
+        
+        if(minHeap.isEmpty()){
+            return new int[]{0,0};
+        }else{
+            return new int[]{maxHeap.poll(),minHeap.poll()};
+        }
+        
 	}
 }
