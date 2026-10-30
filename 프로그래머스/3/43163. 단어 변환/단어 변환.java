@@ -1,55 +1,50 @@
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 class Solution {
-	static class Node {
-		String word;
-		int length;
-
-		public Node(String word, int length) {
-			this.word = word;
-			this.length = length;
-		}
-	}
-
-	boolean[] visited;
+    int min;
 
 	public int solution(String begin, String target, String[] words) {
-		int n = words.length;
-		visited = new boolean[n];
-
-		Queue<Node> queue = new LinkedList<>();
-		queue.offer(new Node(begin, 0));
-
-		while (!queue.isEmpty()) {
-			Node cur = queue.poll();
-
-			// target과 같은지 확인
-			if (cur.word.equals(target)) {
-				return cur.length;
-			}
-
-			for (int i = 0; i < n; i++) {
-				if (!visited[i] && isNext(cur.word, words[i])) { // 방문 x, 다음에 갈 수 있는 단어인지
-					queue.offer(new Node(words[i], cur.length + 1));
-					visited[i] = true;
-				}
-			}
-		}
-		
-		return 0;
-	}
-
-	private boolean isNext(String cur, String next) {
-		int diff = 0;
-
-		for (int i = 0; i < cur.length(); i++) {
-			if (cur.charAt(i) != next.charAt(i)) {
-				diff++;
-			}
-		}
-
-		return diff == 1 ? true : false;
-	}
+        // words안에 target이 없으면 0 return
+        String[] word = Arrays.copyOf(words, words.length + 1);
+        word[words.length] = begin;
+        
+        min=Integer.MAX_VALUE;
+        dfs(word.length-1,new boolean[word.length],word,0,target);
+        return min==Integer.MAX_VALUE ? 0:min;
+        
+    }
+    
+    public void dfs(int now, boolean[] visited, String[] words, int depth, String target){
+        if(target.equals(words[now])){
+            min=Math.min(min,depth);
+            return;
+        }
+        
+        visited[now]=true;
+        
+        for(int i=0;i<words.length;i++){
+            if(visited[i]) continue;
+            
+            // 한단어 차이나면
+            int diff=0;
+            for(int j=0;j<words[i].length();j++){
+                if(words[now].charAt(j) != words[i].charAt(j)){
+                    diff++;
+                }
+            }
+            
+            if(diff==1){
+                dfs(i,visited,words,depth+1,target);
+            }
+        }
+    }
 
 }
+
+
+/*
+한단어만 차이나는걸 어떻게 알지..
+갈 수 있는 단어 매번 조사후에 가기
+
+
+*/
