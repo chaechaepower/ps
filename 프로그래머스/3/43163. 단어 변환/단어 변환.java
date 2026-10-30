@@ -1,44 +1,47 @@
 import java.util.*;
 
 class Solution {
-    int min;
 
 	public int solution(String begin, String target, String[] words) {
-        // words안에 target이 없으면 0 return
-        String[] word = Arrays.copyOf(words, words.length + 1);
-        word[words.length] = begin;
+        String[] word = Arrays.copyOf(words, words.length+1);
+        word[word.length-1]=begin;
         
-        min=Integer.MAX_VALUE;
-        dfs(word.length-1,new boolean[word.length],word,0,target);
-        return min==Integer.MAX_VALUE ? 0:min;
+        // 단어, 단계
+        Queue<int[]> queue=new LinkedList<>();
+        boolean[] visited=new boolean[word.length];
+        queue.offer(new int[]{word.length-1,0});
+        visited[word.length-1]=true;
         
-    }
-    
-    public void dfs(int now, boolean[] visited, String[] words, int depth, String target){
-        if(target.equals(words[now])){
-            min=Math.min(min,depth);
-            return;
-        }
-        
-        visited[now]=true;
-        
-        for(int i=0;i<words.length;i++){
-            if(visited[i]) continue;
+        while(!queue.isEmpty()){
+            int[] now=queue.poll();
+            String nowWord=word[now[0]];
+            int nowStep=now[1];
             
-            // 한단어 차이나면
-            int diff=0;
-            for(int j=0;j<words[i].length();j++){
-                if(words[now].charAt(j) != words[i].charAt(j)){
-                    diff++;
+            if(target.equals(nowWord)){
+                return nowStep;
+            }
+            
+            for(int i=0;i<word.length;i++){
+                if(visited[i]) continue;
+                
+                // 차이가 1인지 확인
+                int diff=0;
+                
+                for(int j=0;j<word[i].length();j++){
+                    if(nowWord.charAt(j)!=word[i].charAt(j)){
+                        diff++;
+                    }
+                }
+                
+                if(diff==1){
+                    queue.offer(new int[]{i,nowStep+1});
+                    visited[i]=true;
                 }
             }
-            
-            if(diff==1){
-                dfs(i,visited,words,depth+1,target);
-            }
         }
+        
+        return 0;
     }
-
 }
 
 
