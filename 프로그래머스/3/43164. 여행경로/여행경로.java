@@ -1,79 +1,65 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 class Solution {
-	static int n;
-	static Map<String, List<String>> map;
-	static List<String> result;
-
-	public static void main(String[] args) {
-		String[][] tickets = { { "ICN", "JFK" }, { "HND", "IAD" }, { "JFK", "HND" } };
-
-		String[] str = solution(tickets);
-		for(String s:str) {
-			System.out.println(s);
-		}
+    Map<String, List<String>> map;
+    List<String> result;
+    String[][] tickets;
+    
+	public String[] solution(String[][] tickets) {
+        this.tickets=tickets;
+	    map=new HashMap<>();
+        
+        for(String[] ticket:tickets){
+            String from = ticket[0];
+            String to = ticket[1];
+            
+            map.computeIfAbsent(from, k -> new ArrayList<>()).add(to);
+        }
+        
+        result=new ArrayList<>();
+        dfs("ICN");
+        
+        return result.toArray(new String[0]);
 	}
-
-	public static String[] solution(String[][] tickets) {
-		n = tickets.length;
-
-		map = new HashMap<>();
-
-		for (String[] ticket : tickets) {
-			String u = ticket[0];
-			String v = ticket[1];
-
-			map.computeIfAbsent(u, k -> new ArrayList<>()).add(v);
-		}
-
-		for (List<String> end : map.values()) {
-			Collections.sort(end);
-		}
-
-		result = new ArrayList<>();
-		result.add("ICN");
-		dfs("ICN", 0);
-
-		String[] answer = new String[result.size()];
-		for (int i = 0; i < result.size(); i++) {
-			answer[i] = result.get(i);
-		}
-
-		return answer;
-	}
-
-	private static boolean dfs(String start, int count) {
-		if (count == n) {
-			return true;
-		}
-
-		List<String> ends = map.get(start);
-		
-		if(ends==null) {
-			return false;
-		}
-
-		for(int i=0;i<ends.size();i++) {
-			String end = ends.remove(i);
-			result.add(end);
-			
-			if(dfs(end, count+1)) {
-				return true;
-			}
-			
-			result.remove(result.size()-1);
-			ends.add(i, end);
-		}
-		
-		return false;
-	}
+    
+    private boolean dfs(String from){
+        result.add(from);
+        
+        if(result.size()==tickets.length+1){
+            return true;
+        }
+        
+        List<String> toList = map.get(from);
+        
+        if (toList == null) {
+            result.remove(result.size() - 1);
+            return false;
+        }
+        
+        Collections.sort(toList);
+        
+        for(int i=0;i<toList.size();i++){
+            String to = toList.remove(i);
+            
+            boolean isDone = dfs(to);
+            if(isDone) return true;
+                
+            toList.add(i,to);
+        }
+        
+        result.remove(result.size() - 1);
+        return false;
+    }
 }
 
+
+
 /*
- * 모든 경로를 다 사용 방문한 곳 또 방문 가능 여러 경로 존재 시 알파벳 순으로 방문
- * 
- */
+
+
+각 공항마다 갈 수 있는 공항 저장(알파벳 순)
+ICN부터 dfs
+간선을 방문 체크해야함 -> 방문하면 list에서 빼기
+
+
+*/
