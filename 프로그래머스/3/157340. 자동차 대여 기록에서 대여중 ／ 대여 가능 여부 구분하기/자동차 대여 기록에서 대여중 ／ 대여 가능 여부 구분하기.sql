@@ -1,3 +1,8 @@
+
+
+-- CAR_ID GROUP BY로 묶은 뒤 한번이라도 22-10-16에 대여하는지 확인 
+-- 
+
 SELECT
     CAR_ID,
     CASE
@@ -5,8 +10,7 @@ SELECT
             CAR_ID IN (
                 SELECT CAR_ID
                 FROM CAR_RENTAL_COMPANY_RENTAL_HISTORY
-                WHERE START_DATE <= '2022-10-16'
-                AND END_DATE >= '2022-10-16'
+                WHERE '2022-10-16' BETWEEN START_DATE AND END_DATE
             )
         THEN '대여중'
         ELSE '대여 가능'
