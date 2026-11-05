@@ -1,53 +1,58 @@
 import java.util.*;
+import java.math.*;
+import java.io.*;
 
 class Solution {
-    Map<String, List<String>> map;
-    List<String> result;
     String[][] tickets;
+    Map<String, List<String>> map;
+    List<String> answer;
     
 	public String[] solution(String[][] tickets) {
-        this.tickets=tickets;
-	    map=new HashMap<>();
+        map = new HashMap<>();
         
-        for(String[] ticket:tickets){
-            String from = ticket[0];
-            String to = ticket[1];
+        for(String[] ticket: tickets){
+            String a = ticket[0];
+            String b = ticket[1];
             
-            map.computeIfAbsent(from, k -> new ArrayList<>()).add(to);
+            map.computeIfAbsent(a,k->new ArrayList<>()).add(b);
         }
         
-        result=new ArrayList<>();
+        for (List<String> list : map.values()) {
+            Collections.sort(list);
+        }
+        
+        this.tickets=tickets;
+        answer=new ArrayList<>();
         dfs("ICN");
         
-        return result.toArray(new String[0]);
-	}
+        return answer.toArray(new String[0]);
+    }
     
-    private boolean dfs(String from){
-        result.add(from);
+    private boolean dfs(String now){
+        answer.add(now);
         
-        if(result.size()==tickets.length+1){
+        if(answer.size()==tickets.length+1){
             return true;
         }
+    
+        List<String> list = map.get(now);
         
-        List<String> toList = map.get(from);
-        
-        if (toList == null) {
-            result.remove(result.size() - 1);
+        if(list==null || list.isEmpty()){
+            answer.remove(answer.size() - 1);
             return false;
         }
-        
-        Collections.sort(toList);
-        
-        for(int i=0;i<toList.size();i++){
-            String to = toList.remove(i);
-            
-            boolean isDone = dfs(to);
-            if(isDone) return true;
                 
-            toList.add(i,to);
+        for(int i=0;i<list.size();i++){
+            String b = list.remove(i);
+            
+            if(dfs(b)){
+                return true;
+            }
+            
+            list.add(i,b);
         }
         
-        result.remove(result.size() - 1);
+        answer.remove(answer.size() - 1);
         return false;
     }
 }
@@ -56,10 +61,11 @@ class Solution {
 
 /*
 
+1. a공항에 연결된 b공항 정보 저장
+2. "ICN" 공항부터 dfs
+3. depth가 주어진 항공권 정보와 같다면 끝
 
-각 공항마다 갈 수 있는 공항 저장(알파벳 순)
-ICN부터 dfs
-간선을 방문 체크해야함 -> 방문하면 list에서 빼기
+
 
 
 */
