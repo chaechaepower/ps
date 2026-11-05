@@ -1,39 +1,35 @@
-import java.io.IOException;
+import java.io.*;
+import java.math.*;
+import java.util.*;
 
 class Solution {
+    int[][] dungeons;
+    int maxLen;
+    boolean[] visited;
 
-	static int[][] dungeons;
-	static boolean[] visited;
-	static int len;
-	static int ans;
-
-	public static void main(String[] args) throws IOException {
-
+	public int solution(int k, int[][] dungeons) {
+	    this.dungeons = dungeons;
+        maxLen=Integer.MIN_VALUE;
+        visited=new boolean[dungeons.length];
+        
+        dfs(0,k);
+        return maxLen;
 	}
 
-	public static int solution(int k, int[][] dungeons) {
-		Solution.dungeons = dungeons;
-		len = dungeons.length;
-		visited = new boolean[len];
-
-		dfs(0, k);
-		return ans;
-	}
-
-	private static void dfs(int depth, int now) {
-
-		ans = Math.max(ans, depth);
-
-		for (int i = 0; i < len; i++) {
-			if (!visited[i]) {
-				if (now >= dungeons[i][0]) {
-					visited[i] = true;
-					dfs(depth + 1, now - dungeons[i][1]);
-					visited[i] = false;
-				}
-			}
-		}
-	}
+    private void dfs(int len, int fatigue){
+        maxLen=Math.max(len,maxLen);
+            
+        // 방문하지 않았고 갈 수 있는 곳
+        for(int i=0;i<dungeons.length;i++){
+            if(visited[i]) continue;
+            
+            if(fatigue>=dungeons[i][0]){
+                visited[i]=true;
+                dfs(len+1,fatigue-dungeons[i][1]);
+                visited[i]=false;
+            }
+        }
+    } 
 }
 
 /*
