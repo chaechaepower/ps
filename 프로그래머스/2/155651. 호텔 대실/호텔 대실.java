@@ -26,63 +26,36 @@ class Solution {
         // 시작시간 순으로 정렬
         Arrays.sort(bookTime, (b1,b2)->b1[0]-b2[0]);
         
-        List<List<Integer>> list = new ArrayList<>();
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
         
-        List<Integer> room = new ArrayList<>();
-        room.add(0);
-        list.add(room);
-        
-        for(int i=1;i<bookTime.length;i++){
+        for(int i=0;i<bookTime.length;i++){
+            int start=bookTime[i][0];
+            int end=bookTime[i][1]+10;
             
-            boolean isPossible=false;
-            
-            // 들어갈 수 있는 룸 체크
-            for(List<Integer> rooms : list){
-                Collections.sort(rooms, (t1,t2)-> bookTime[t2][1]-bookTime[t1][1]); // 룸에서 제일 늦은 종료 시각 기준
-            
-                int lastIdx=rooms.get(0);
-                int last=bookTime[lastIdx][1];
-                
-                if(last+10<=bookTime[i][0]){
-                    rooms.add(i);
-                    isPossible=true;
-                    break;
-                }
+            if(pq.isEmpty()) {
+                pq.offer(end);
+                continue;
             }
             
-            if(!isPossible){
-                room = new ArrayList<>();
-                room.add(i);
-                list.add(room);
+            if(pq.peek() > start){
+                pq.offer(end);
+            }else{
+                pq.poll();
+                pq.offer(end);
             }
         }
         
-        // for(List<Integer> rooms : list){
-        //     for(Integer time: rooms){
-        //         System.out.print(time+" ");
-        //     }
-        //     System.out.println();
-        // }
-        
-        return list.size();
-        
+        return pq.size();
     }
 }
 
 /*
 
 1. 시작시간 순으로 정렬
-2. Map<Integer, List<Integer>>
-시간표 - 같은 객실 사용 가능한 시간표
 
-사용 가능
--> 시작 시간이 제일 끝에 시간표 종료 시각보다 +10분 이상
+pq에 종료시각+10분 저장
+가장 빨리 쓸 수 있는 룸 > 입력 시작 시간 : 새로운 룸 생성
+                   <=           : 해당 룸 poll, 입력 종료시간+10분 저장
 
-시간 계산
-계산할 땐 분으로 환산..
-
-1
-2 4
-3 5
 
 */
